@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MusicRepository } from './music.repository';
-import { CreateMusicDto } from './types/create-music.dto';
-import { UpdateMusicDto } from './types/update-music.dto';
+import { CreateMusicDto } from './dto/create-music.dto';
+import { UpdateMusicDto } from './dto/update-music.dto';
 
 @Injectable()
 export class MusicService {

@@ -8,8 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
-import { CreateMusicDto } from './types/create-music.dto';
-import { UpdateMusicDto } from './types/update-music.dto';
+import { CreateMusicDto } from './dto/create-music.dto';
+import { UpdateMusicDto } from './dto/update-music.dto';
 
 @Controller('music')
 export class MusicController {
