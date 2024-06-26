@@ -5,7 +5,7 @@ import { UpdateAuthorDto } from "./dto/update-author.dto";
 @Injectable()
 export class AuthorRepository {
 
-    private readonly authors = []
+    private authors = []
 
     create(createAuthorDto: CreateAuthorDto) {
         const newAuthor = { id: this.authors.length + 1, ...createAuthorDto };
@@ -22,8 +22,9 @@ export class AuthorRepository {
             if (this.authors[i].id === Number(id)) {
                 return this.authors[i]
             }
-            return null
+            
         }
+        return null
     }
 
     update(id: number, updatedAuthorDto: UpdateAuthorDto) {
