@@ -4,8 +4,9 @@ import { AppService } from './app.service';
 import { AuthorModule } from './author/author.module';
 
 @Module({
-  imports: [AuthorModule],
+  imports: [MusicModule, UsersModule,AuthorModule],
   controllers: [AppController],
   providers: [AppService],
+    
 })
 export class AppModule {}
