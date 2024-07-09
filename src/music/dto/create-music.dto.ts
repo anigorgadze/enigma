@@ -2,8 +2,12 @@ import { IsString, IsUrl } from 'class-validator';
 
 export class CreateMusicDto {
   @IsString()
-  name: string;
+  title: string;
+
+  @IsString()
+  coverImgUrl: string;
 
   @IsUrl()
-  url: string;
+  audioUrl: string;
+
 }
