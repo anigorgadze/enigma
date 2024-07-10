@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
-import { AlbumService } from "./album.servic";
+import { AlbumService } from "./album.service";
 import { CreateAlbumDto } from "./dto/create-album.dto";
 import { UpdateAlbumDto } from "./dto/update-album.dto";
 
