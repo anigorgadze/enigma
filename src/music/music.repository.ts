@@ -34,10 +34,10 @@ export class MusicRepository {
   
   async update(id: number, updateMusicDto: UpdateMusicDto) {
     await this.musicRepository
-      .createQueryBuilder('music')
+      .createQueryBuilder()
       .update()
       .set(updateMusicDto)
-      .where('music.id =:id', { id })
+      .where('id = :id', {id})
       .execute()
 
     return await this.musicRepository
@@ -50,7 +50,7 @@ export class MusicRepository {
   async remove(id: number) {
     await this.musicRepository
     .createQueryBuilder('music')
-    .where('music.id =:id' , {id})
+    .where('id =:id' , {id})
     .softDelete()
     .execute()
 
@@ -60,5 +60,4 @@ export class MusicRepository {
     .where('music.id =:id' , {id})
     .getOne()
   }
-
 }

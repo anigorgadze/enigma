@@ -6,13 +6,13 @@ export class MusicEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({type: 'varchar'})
     title: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     coverImgUrl: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     audioUrl: string;
 
     @CreateDateColumn()

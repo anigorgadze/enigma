@@ -5,3 +5,4 @@ export class UpdateAlbumDto extends (CreateAlbumDto) {
 }
 
 export { CreateAlbumDto };
+
