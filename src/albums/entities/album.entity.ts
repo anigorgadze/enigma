@@ -1,7 +1,7 @@
 import { type } from "os";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({name:'album'})
 export class AlbumEntity {
 
     @PrimaryGeneratedColumn()

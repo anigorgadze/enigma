@@ -1,6 +1,6 @@
 import { IsDateString, IsString, IsUrl } from "class-validator";
 
-export class CreateAlbumDto {
+export class CreateAlbumsDto {
    
         @IsString()
         title: string;

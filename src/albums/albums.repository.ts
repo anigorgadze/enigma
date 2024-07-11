@@ -1,58 +1,59 @@
 import { Injectable } from "@nestjs/common";
-import { CreateAlbumDto, UpdateAlbumDto } from "./dto/update-album.dto";
+import { UpdateAlbumsDto } from "./dto/update-albums.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AlbumEntity } from "./entities/album.entity";
 import { Repository } from "typeorm";
+import { CreateAlbumsDto } from "./dto/create-albums.dto";
 
 
 @Injectable()
-export class AlbumRepository {
+export class AlbumsRepository {
     constructor(
         @InjectRepository(AlbumEntity)
-        private albumRepository : Repository <AlbumEntity>
+        private albumsRepository : Repository <AlbumEntity>
     ){}
 
-    async create(createAlbumDto: CreateAlbumDto) {
-        const newAlbum = this.albumRepository.create(createAlbumDto)
-        return await this.albumRepository.save(newAlbum)
+    async create(createAlbumsDto: CreateAlbumsDto) {
+        const newAlbum = this.albumsRepository.create(createAlbumsDto)
+        return await this.albumsRepository.save(newAlbum)
     }
 
     async findAll() {
-        return await  this.albumRepository
+        return await  this.albumsRepository
         .createQueryBuilder('album')
         .getMany()
 
     }
 
     async findOne(id: number) {
-        return await this.albumRepository
+        return await this.albumsRepository
         .createQueryBuilder('album')
         .where('album.id =:id', {id})
         .getOne()
     }
 
-    async update(id: number, updateAlbumDto: UpdateAlbumDto){        
-        await this.albumRepository
+    async update(id: number, updateAlbumDto: UpdateAlbumsDto){        
+        await this.albumsRepository
         .createQueryBuilder('album')
         .update()
         .set(updateAlbumDto)
-        .where('id =:id' , {id})
+        .where('album.id =:id' , {id})
         .execute()
 
-        return await this.albumRepository
+        return await this.albumsRepository
         .createQueryBuilder('album')
         .where('album.id =:id' , {id})
         .getOne()
     }
 
     async remove(id: number){
-        await this.albumRepository
-        .createQueryBuilder()
-        .where('id =:id' , {id})
+        await this.albumsRepository
+        .createQueryBuilder('album')
+        .where('album.id =:id' , {id})
         .softDelete()
         .execute()
 
-        return await this.albumRepository
+        return await this.albumsRepository
         .createQueryBuilder('album')
         .withDeleted()
         .where('album.id =:id',{id})
