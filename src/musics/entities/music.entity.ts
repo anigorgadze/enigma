@@ -1,18 +1,18 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({name:'music'})
 export class MusicEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({type: 'varchar'})
     title: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     coverImgUrl: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     audioUrl: string;
 
     @CreateDateColumn()

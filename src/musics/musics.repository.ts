@@ -1,46 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMusicDto } from './dto/create-music.dto';
-import { UpdateMusicDto } from './dto/update-music.dto';
+import { CreateMusicsDto } from './dto/create-musics.dto';
+import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class MusicRepository {
+export class MusicsRepository {
 
   constructor(
     @InjectRepository(MusicEntity)
-    private musicRepository: Repository<MusicEntity>
+    private musicsRepository: Repository<MusicEntity>
   ) { }
 
- async create(createMusicDto: CreateMusicDto) {
+ async create(createMusicsDto: CreateMusicsDto) {
 
-    const newMusic = this.musicRepository.create(createMusicDto)
-    return  await this.musicRepository.save(newMusic)
+    const newMusic = this.musicsRepository.create(createMusicsDto)
+    return  await this.musicsRepository.save(newMusic)
   }
 
   async findAll() {
-    return await this.musicRepository
+    return await this.musicsRepository
       .createQueryBuilder('music')
       .getMany()
   }
 
   async findOne(id: number) {
-    return await this.musicRepository
+    return await this.musicsRepository
       .createQueryBuilder('music')
       .where('music.id =:id', { id })
       .getOne()
   }
   
-  async update(id: number, updateMusicDto: UpdateMusicDto) {
-    await this.musicRepository
+  async update(id: number, updateMusicsDto: UpdateMusicsDto) {
+    await this.musicsRepository
       .createQueryBuilder('music')
       .update()
-      .set(updateMusicDto)
-      .where('music.id =:id', { id })
+      .set(updateMusicsDto)
+      .where('music.id = :id', {id})
       .execute()
 
-    return await this.musicRepository
+    return await this.musicsRepository
       .createQueryBuilder('music')
       .where('music.id =:id', { id })
       .getOne()
@@ -48,17 +48,16 @@ export class MusicRepository {
 
 
   async remove(id: number) {
-    await this.musicRepository
+    await this.musicsRepository
     .createQueryBuilder('music')
     .where('music.id =:id' , {id})
     .softDelete()
     .execute()
 
-    return await this.musicRepository
+    return await this.musicsRepository
     .createQueryBuilder('music')
     .withDeleted()
     .where('music.id =:id' , {id})
     .getOne()
   }
-
 }
