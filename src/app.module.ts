@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AlbumModule } from './album/album.module';
+import { AlbumsModule } from './albums/albums.module';
 import { AuthorModule } from './author/author.module';
 import { UsersModule } from './users/users.module';
-import { MusicModule } from './music/music.module';
+import { MusicsModule } from './musics/musics.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [MusicModule, UsersModule,AuthorModule,AlbumModule, TypeOrmModule.forRoot({
+  imports: [MusicsModule, UsersModule,AuthorModule,AlbumsModule, TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
