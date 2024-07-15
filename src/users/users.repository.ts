@@ -16,7 +16,6 @@ async create(createUserssDto: CreateUsersDto) {
 
   const SALT = await bcrypt.genSalt()
   const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT)
-  // const newUser = this.usersRepository.create(createUserssDto)
   const newUser = this.usersRepository.create({
     ...createUserssDto,
     password: hashedPassword,
@@ -43,7 +42,7 @@ async update(id: number , updateUsersDto: UpdateUsersDto) {
     const salt = await bcrypt.genSalt();
     updateUsersDto.password = await bcrypt.hash(updateUsersDto.password, salt);
   }
-  
+
   await this.usersRepository
   .createQueryBuilder('user')
   .update()
