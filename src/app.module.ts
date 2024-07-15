@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { MusicsModule } from './musics/musics.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorsModule } from './authors/authors.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthorsModule } from './authors/authors.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

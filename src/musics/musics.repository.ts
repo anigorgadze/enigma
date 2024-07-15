@@ -11,7 +11,7 @@ export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
     private musicsRepository: Repository<MusicEntity>
-  ) { }
+  ) {}
 
  async create(createMusicsDto: CreateMusicsDto) {
 
