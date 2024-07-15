@@ -1,48 +1,72 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserEntity } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
-  private users = [];
+  constructor(@InjectRepository (UserEntity) 
+     private usersRepository: Repository <UserEntity>)
+    {}
+  
+async create(createUserssDto: CreateUsersDto) {
 
-  create(createUsersDto: CreateUsersDto) {
-    const newUser = { id: this.users.length + 1, ...createUsersDto };
-    this.users.push(newUser);
-    return newUser;
+  const SALT = await bcrypt.genSalt()
+  const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT)
+  const newUser = this.usersRepository.create({
+    ...createUserssDto,
+    password: hashedPassword,
+  });
+  return await this.usersRepository.save(newUser)
+}
+
+async findAll() {
+  return await this.usersRepository
+  .createQueryBuilder('user')
+  .getMany()
+}
+
+async findOne(id: number){
+  return await this.usersRepository
+  .createQueryBuilder('user')
+  .where('user.id =:id' , {id})
+  .getOne()
+}
+
+async update(id: number , updateUsersDto: UpdateUsersDto) {
+
+  if (updateUsersDto.password) {
+    const salt = await bcrypt.genSalt();
+    updateUsersDto.password = await bcrypt.hash(updateUsersDto.password, salt);
   }
 
-  findAll() {
-    return this.users;
-  }
+  await this.usersRepository
+  .createQueryBuilder('user')
+  .update()
+  .set(updateUsersDto)
+  .where('user.id =:id' , {id})
+  .execute()
 
-  findOne(id: number) {
-    for (let i = 0; i < this.users.length; i++) {
-      if (this.users[i].id === Number(id)) {
-        return this.users[i];
-      }
-    }
-    return null;
-  }
+  return await this.usersRepository 
+  .createQueryBuilder('user')
+  .where('user.id =:id' , {id})
+  .getOne()
+}
 
-  update(id: number, updateUsersDto: UpdateUsersDto) {
-    for (let i = 0; i < this.users.length; i++) {
-      if (this.users[i].id === Number(id)) {
-        const updatedUser = { ...this.users[i], ...updateUsersDto };
-        this.users[i] = updatedUser;
-        return updatedUser;
-      }
-    }
-    return null;
-  }
+async remove(id: number) {
+  await this.usersRepository
+  .createQueryBuilder('user')
+  .where('user.id =:id' , {id})
+  .softDelete()
+  .execute()
 
-  remove(id: number) {
-    for (let i = 0; i < this.users.length; i++) {
-      if (this.users[i].id === Number(id)) {
-        const [removedUser] = this.users.splice(i, 1);
-        return removedUser;
-      }
-    }
-    return null;
-  }
+  return await this.usersRepository
+  .createQueryBuilder('user')
+  .withDeleted()
+  .where('user.id =:id' , {id})
+  .getOne()
+}
 }

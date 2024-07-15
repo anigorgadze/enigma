@@ -6,29 +6,25 @@ import { UpdateUsersDto } from "./dto/update-users.dto";
 @Injectable()
 export class UsersService {
 
-    constructor(private readonly usersRepository:UsersRepository){}
+    constructor(private readonly usersRepository: UsersRepository) { }
 
-    create(createUsersDto:CreateUsersDto){
-
+    create(createUsersDto: CreateUsersDto) {
         return this.usersRepository.create(createUsersDto)
     }
 
-    findAll(){
+    findAll() {
         return this.usersRepository.findAll()
     }
 
-    findOne(id:number){
-
+    findOne(id: number) {
         return this.usersRepository.findOne(id)
     }
 
-    update(id:number, updateUsersDto:UpdateUsersDto){
-
-        return this.usersRepository.update(id,updateUsersDto)
+    update(id: number, updateUsersDto: UpdateUsersDto) {
+        return this.usersRepository.update(id, updateUsersDto)
     }
 
-    remove(id:number){
-
+    remove(id: number) {
         return this.usersRepository.remove(id)
     }
 }
