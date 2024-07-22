@@ -7,6 +7,9 @@ import { UpdateAuthorsDto } from './dto/update-authors.dto';
 
 @Injectable()
 export class AuthorsRepository {
+  createQueryBuilder(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
@@ -26,6 +29,15 @@ export class AuthorsRepository {
       .createQueryBuilder('author')
       .where('author.id = :id', { id })
       .getOne();
+  }
+
+  async findByName(search: string) {
+    return await this.authorsRepository
+      .createQueryBuilder('author')
+      .where('author.name LIKE :searchField', {
+        searchField: `%${search}%`,
+      })
+      .getMany();
   }
 
   async update(id: number, updateAuthorsDto: UpdateAuthorsDto) {
