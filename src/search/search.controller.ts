@@ -5,7 +5,7 @@ import { SearchService } from './search.service';
 export class SearchController {
     constructor(private readonly searchService:SearchService){}
   @Get()
-  findAll(@Query('searchString') searchString: string) {
-    return this.searchService.findAll(searchString)
+  findAll(@Query('searchField') search: string) {
+    return this.searchService.search(search)
   }
 }

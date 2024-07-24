@@ -9,5 +9,6 @@ import { MusicEntity } from './entities/music.entity';
   imports: [TypeOrmModule.forFeature([MusicEntity])],
   controllers: [MusicsController],
   providers: [MusicsService, MusicsRepository],
+  exports: [MusicsRepository],
 })
 export class MusicsModule {}
