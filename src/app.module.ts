@@ -7,6 +7,7 @@ import { MusicsModule } from './musics/musics.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorsModule } from './authors/authors.module';
 import { SearchModule } from './search/search.module';
+import { PlaylistsModule } from './playlists/playlists.module';
 
 @Module({
   imports: [
@@ -19,12 +20,13 @@ import { SearchModule } from './search/search.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'Nikalachka2003',
+      password: '',
       database: 'enigma',
       autoLoadEntities: true,
       synchronize: true,
     }),
     SearchModule,
+    PlaylistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
