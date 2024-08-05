@@ -8,65 +8,65 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
-  constructor(@InjectRepository (UserEntity) 
-     private usersRepository: Repository <UserEntity>)
-    {}
-  
-async create(createUserssDto: CreateUsersDto) {
+  constructor(
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
+  ) {}
 
-  const SALT = await bcrypt.genSalt()
-  const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT)
-  const newUser = this.usersRepository.create({
-    ...createUserssDto,
-    password: hashedPassword,
-  });
-  return await this.usersRepository.save(newUser)
-}
-
-async findAll() {
-  return await this.usersRepository
-  .createQueryBuilder('user')
-  .getMany()
-}
-
-async findOne(id: number){
-  return await this.usersRepository
-  .createQueryBuilder('user')
-  .where('user.id =:id' , {id})
-  .getOne()
-}
-
-async update(id: number , updateUsersDto: UpdateUsersDto) {
-
-  if (updateUsersDto.password) {
-    const salt = await bcrypt.genSalt();
-    updateUsersDto.password = await bcrypt.hash(updateUsersDto.password, salt);
+  async create(createUserssDto: CreateUsersDto) {
+    const SALT = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT);
+    const newUser = this.usersRepository.create({
+      ...createUserssDto,
+      password: hashedPassword,
+    });
+    return await this.usersRepository.save(newUser);
   }
 
-  await this.usersRepository
-  .createQueryBuilder('user')
-  .update()
-  .set(updateUsersDto)
-  .where('user.id =:id' , {id})
-  .execute()
+  async findAll() {
+    return await this.usersRepository.createQueryBuilder('user').getMany();
+  }
 
-  return await this.usersRepository 
-  .createQueryBuilder('user')
-  .where('user.id =:id' , {id})
-  .getOne()
-}
+  async findOne(id: number) {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id =:id', { id })
+      .getOne();
+  }
 
-async remove(id: number) {
-  await this.usersRepository
-  .createQueryBuilder('user')
-  .where('user.id =:id' , {id})
-  .softDelete()
-  .execute()
+  async update(id: number, updateUsersDto: UpdateUsersDto) {
+    if (updateUsersDto.password) {
+      const salt = await bcrypt.genSalt();
+      updateUsersDto.password = await bcrypt.hash(
+        updateUsersDto.password,
+        salt,
+      );
+    }
 
-  return await this.usersRepository
-  .createQueryBuilder('user')
-  .withDeleted()
-  .where('user.id =:id' , {id})
-  .getOne()
-}
+    await this.usersRepository
+      .createQueryBuilder('user')
+      .update()
+      .set(updateUsersDto)
+      .where('user.id =:id', { id })
+      .execute();
+
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id =:id', { id })
+      .getOne();
+  }
+
+  async remove(id: number) {
+    await this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.id =:id', { id })
+      .softDelete()
+      .execute();
+
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .withDeleted()
+      .where('user.id =:id', { id })
+      .getOne();
+  }
 }

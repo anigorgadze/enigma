@@ -1,4 +1,10 @@
-import { IsDateString, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 
 export class CreateAuthorsDto {
   @IsString()
@@ -9,12 +15,11 @@ export class CreateAuthorsDto {
 
   @IsUrl()
   imgUrl: string;
-  
+
   @IsNumber({}, { each: true })
-  musicsIds: number[]
+  musicsIds: number[];
 
   @IsNumber({}, { each: true })
   @IsOptional()
   albumsIds: number[];
-
 }

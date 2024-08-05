@@ -8,6 +8,6 @@ import { PlaylistsRepository } from './playlists.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([PlaylistEntity])],
   controllers: [PlaylistsController],
-  providers: [PlaylistsService , PlaylistsRepository],
+  providers: [PlaylistsService, PlaylistsRepository],
 })
 export class PlaylistsModule {}

@@ -7,22 +7,22 @@ import { PlaylistsRepository } from './playlists.repository';
 export class PlaylistsService {
   constructor(private readonly playlistRepository: PlaylistsRepository) {}
   create(createPlaylistDto: CreatePlaylistDto) {
-    return this.playlistRepository.create(createPlaylistDto)
+    return this.playlistRepository.create(createPlaylistDto);
   }
 
   findAll() {
-    return this.playlistRepository.findAll()
+    return this.playlistRepository.findAll();
   }
 
   findOne(id: number) {
-    return this.playlistRepository.findOne(id)
+    return this.playlistRepository.findOne(id);
   }
 
   update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
-    return this.playlistRepository.update(id, updatePlaylistDto)
+    return this.playlistRepository.update(id, updatePlaylistDto);
   }
 
   remove(id: number) {
-    return  this.playlistRepository.remove(id)
+    return this.playlistRepository.remove(id);
   }
 }

@@ -17,24 +17,24 @@ export class AuthorEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({type:'varchar'})
+  @Column({ type: 'varchar' })
   name: string;
 
   @Column({ nullable: true })
   releaseDate: Date;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   imgUrl: string;
 
   @Column({ nullable: true })
   userId: number;
 
-  @ManyToMany(() => MusicEntity, (music) => music.authors , {cascade:true})
+  @ManyToMany(() => MusicEntity, (music) => music.authors, { cascade: true })
   @JoinTable()
   musics: MusicEntity[];
-  
-  @ManyToMany(()=> AlbumEntity , (albums) => albums.authors)
-  albums: AlbumEntity[]
+
+  @ManyToMany(() => AlbumEntity, (albums) => albums.authors)
+  albums: AlbumEntity[];
 
   @CreateDateColumn()
   createdAt: string;

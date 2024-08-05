@@ -5,31 +5,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
     private musicsRepository: Repository<MusicEntity>,
-  ) { }
+  ) {}
 
   async create(createMusicsDto: CreateMusicsDto) {
-
-    const newMusic = new MusicEntity()
-    newMusic.title = createMusicsDto.title
-    newMusic.coverImgUrl = createMusicsDto.coverImgUrl
-    newMusic.audioUrl = createMusicsDto.audioUrl
-
-
+    const newMusic = new MusicEntity();
+    newMusic.title = createMusicsDto.title;
+    newMusic.coverImgUrl = createMusicsDto.coverImgUrl;
+    newMusic.audioUrl = createMusicsDto.audioUrl;
 
     try {
-      await this.musicsRepository.save(newMusic)
-      return newMusic
+      await this.musicsRepository.save(newMusic);
+      return newMusic;
     } catch (exc) {
-      throw new InternalServerErrorException('Could not create music, try again later!')
+      throw new InternalServerErrorException(
+        'Could not create music, try again later!',
+      );
     }
   }
-
 
   findByTitle(search: string) {
     return this.musicsRepository
@@ -41,7 +38,8 @@ export class MusicsRepository {
   }
 
   async findAll() {
-    return await this.musicsRepository.createQueryBuilder('music')
+    return await this.musicsRepository
+      .createQueryBuilder('music')
       .leftJoinAndSelect('music.authors', 'author')
       .leftJoinAndSelect('music.albums', 'album')
       .getMany();

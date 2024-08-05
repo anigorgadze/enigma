@@ -8,10 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorsModule } from './authors/authors.module';
 import { SearchModule } from './search/search.module';
 import { PlaylistsModule } from './playlists/playlists.module';
-import 'dotenv/config'
+import 'dotenv/config';
 
-
-// MYSQL_HOST_NAME=enigma.c9ie
 @Module({
   imports: [
     MusicsModule,
