@@ -1,25 +1,26 @@
+import { MusicEntity } from 'src/musics/entities/music.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'user' })
-export class UserEntity {
+@Entity({ name: 'playlist' })
+export class PlaylistEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  email: string;
+  @Column({ type: 'varchar' })
+  title: string;
 
-  @Column()
-  password: string;
-
-  @Column()
-  imgUrl: string;
+  @ManyToMany(() => MusicEntity, (music) => music.playlist)
+  @JoinTable()
+  musics: MusicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

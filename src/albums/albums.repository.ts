@@ -12,24 +12,28 @@ export class AlbumsRepository {
   constructor(
     @InjectRepository(AlbumEntity)
     private albumsRepository: Repository<AlbumEntity>,
-  ) { }
+  ) {}
 
   async create(createAlbumsDto: CreateAlbumsDto) {
-
-    const newAlbum = new AlbumEntity()
-    newAlbum.artistName = createAlbumsDto.artistName
-    newAlbum.coverUrl = createAlbumsDto.coverUrl
-    newAlbum.title = createAlbumsDto.title
-    newAlbum.releaseDate = createAlbumsDto.releaseDate
-    newAlbum.musics = createAlbumsDto.musicsIds.map((id) => ({
-      id,
-    }) as MusicEntity)
+    const newAlbum = new AlbumEntity();
+    newAlbum.artistName = createAlbumsDto.artistName;
+    newAlbum.coverUrl = createAlbumsDto.coverUrl;
+    newAlbum.title = createAlbumsDto.title;
+    newAlbum.releaseDate = createAlbumsDto.releaseDate;
+    newAlbum.musics = createAlbumsDto.musicsIds.map(
+      (id) =>
+        ({
+          id,
+        }) as MusicEntity,
+    );
 
     try {
-      await this.albumsRepository.save(newAlbum)
-      return newAlbum
+      await this.albumsRepository.save(newAlbum);
+      return newAlbum;
     } catch (exc) {
-      throw new InternalServerErrorException('Could not create album, try again later!')
+      throw new InternalServerErrorException(
+        'Could not create album, try again later!',
+      );
     }
   }
 
@@ -45,7 +49,7 @@ export class AlbumsRepository {
       .createQueryBuilder('album')
       .leftJoinAndSelect('album.musics', 'albumMusics')
       .where('album.id =:id', { id })
-      .getOne(); 
+      .getOne();
   }
 
   async findByTitle(search: string) {
@@ -57,34 +61,37 @@ export class AlbumsRepository {
       .getMany();
   }
 
-  
   async update(id: number, updateAlbumsDto: UpdateAlbumsDto) {
-    const album = await this.albumsRepository.findOne({ where: { id }, relations: ['musics', 'authors'] });
-    
-
+    const album = await this.albumsRepository.findOne({
+      where: { id },
+      relations: ['musics', 'authors'],
+    });
 
     if (!album) {
       throw new InternalServerErrorException('Author not found');
     }
 
-    album.title = album.title
-    album.releaseDate = new Date(updateAlbumsDto.releaseDate)
-    album.coverUrl = updateAlbumsDto.coverUrl
+    album.title = album.title;
+    album.releaseDate = new Date(updateAlbumsDto.releaseDate);
+    album.coverUrl = updateAlbumsDto.coverUrl;
 
-    album.musics = updateAlbumsDto.musicsIds.map(id => ({ id } as MusicEntity));
+    album.musics = updateAlbumsDto.musicsIds.map(
+      (id) => ({ id }) as MusicEntity,
+    );
 
-    album.authors = updateAlbumsDto.authorsIds.map(id => ({ id } as AuthorEntity));
-
+    album.authors = updateAlbumsDto.authorsIds.map(
+      (id) => ({ id }) as AuthorEntity,
+    );
 
     try {
       await this.albumsRepository.save(album);
       return album;
     } catch (err) {
-    
-      throw new InternalServerErrorException('Could not update author, try again later!');
+      throw new InternalServerErrorException(
+        'Could not update author, try again later!',
+      );
     }
   }
-
 
   async remove(id: number) {
     await this.albumsRepository

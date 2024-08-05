@@ -1,8 +1,3 @@
-import { CreateAlbumsDto } from "./create-albums.dto";
+import { CreateAlbumsDto } from './create-albums.dto';
 
-export class UpdateAlbumsDto extends (CreateAlbumsDto) {
-
-}
-
-
-
+export class UpdateAlbumsDto extends CreateAlbumsDto {}
