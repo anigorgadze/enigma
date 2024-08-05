@@ -1,5 +1,8 @@
+import { IsNumber } from "class-validator";
 import { type } from "os";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AuthorEntity } from "src/authors/entities/author.entity";
+import { MusicEntity } from "src/musics/entities/music.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({name:'album'})
 export class AlbumEntity {
@@ -19,9 +22,14 @@ export class AlbumEntity {
     @Column({type: 'varchar'})
     coverUrl: string;
 
-    @Column({type : "simple-array" , nullable : true})
-    musics: string[];
+    @ManyToMany(() => MusicEntity, (music)=> music.albums, {cascade:true})
+    @JoinTable()
+    musics: MusicEntity[]
 
+    @ManyToMany(() => AuthorEntity , (author) => author.albums , {cascade: true})
+    @JoinTable()
+    authors: AuthorEntity[]
+    
     @CreateDateColumn()
     createdAt: Date;
 

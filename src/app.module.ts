@@ -19,7 +19,7 @@ import { SearchModule } from './search/search.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'Nikalachka2003',
+      password: '',
       database: 'enigma',
       autoLoadEntities: true,
       synchronize: true,

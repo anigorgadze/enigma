@@ -1,32 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthorEntity } from './entities/author.entity';
 import { Repository } from 'typeorm';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
+import { MusicEntity } from 'src/musics/entities/music.entity';
+import { AlbumEntity } from 'src/albums/entities/album.entity';
+
 
 @Injectable()
 export class AuthorsRepository {
-  createQueryBuilder(arg0: string) {
-    throw new Error('Method not implemented.');
-  }
+
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
-  ) {}
+
+  ) { }
 
   async create(createAuthorsDto: CreateAuthorsDto) {
-    const newAuthor = this.authorsRepository.create(createAuthorsDto);
-    return await this.authorsRepository.save(newAuthor);
+    const newAuthor = new AuthorEntity()
+    newAuthor.name = createAuthorsDto.name
+    newAuthor.imgUrl = createAuthorsDto.imgUrl
+
+
+if(createAuthorsDto.musicsIds) {
+  newAuthor.musics = createAuthorsDto.musicsIds.map((id) => ({
+    id,
+  }) as MusicEntity);
+
+}
+    if(createAuthorsDto.albumsIds) {
+      newAuthor.albums = createAuthorsDto.albumsIds.map((id) => ({
+        id,
+      }) as AlbumEntity);
+    }
+  
+
+    try {
+      await this.authorsRepository.save(newAuthor)
+      return newAuthor
+    } catch (err) {
+      throw new InternalServerErrorException('Could not create album, try again later!')
+    }
   }
 
   async findAll() {
-    return await this.authorsRepository.createQueryBuilder('author').getMany();
+    return await this.authorsRepository
+      .createQueryBuilder('author')
+      .leftJoinAndSelect('author.musics', 'authorMusics')
+      .leftJoinAndSelect('author.albums', 'authorAlbums')
+      .getMany();
   }
 
   async findOne(id: number) {
     return await this.authorsRepository
       .createQueryBuilder('author')
+      .leftJoinAndSelect('author.musics', 'authorMusics')
+      .leftJoinAndSelect('author.albums', 'authorAlbums')
       .where('author.id = :id', { id })
       .getOne();
   }
@@ -41,18 +71,29 @@ export class AuthorsRepository {
   }
 
   async update(id: number, updateAuthorsDto: UpdateAuthorsDto) {
-    await this.authorsRepository
-      .createQueryBuilder('author')
-      .update()
-      .set(updateAuthorsDto)
-      .where('author.id = :id', { id })
-      .execute();
+    const author = await this.authorsRepository.findOne({ where: { id }, relations: ['musics', 'albums'] });
 
-    return this.authorsRepository
-      .createQueryBuilder('author')
-      .where('author.id = :id', { id })
-      .getOne();
+    if (!author) {
+      throw new InternalServerErrorException('Author not found');
+    }
+
+    author.name = updateAuthorsDto.name
+    author.releaseDate = new Date(updateAuthorsDto.releaseDate)
+    author.imgUrl = updateAuthorsDto.imgUrl
+
+ 
+    author.musics = updateAuthorsDto.musicsIds.map(id => ({ id } as MusicEntity));
+  
+
+  author.albums = updateAuthorsDto.albumsIds.map(id => ({ id } as AlbumEntity));
+      try {
+      await this.authorsRepository.save(author);
+      return author;
+    } catch (err) {
+      throw new InternalServerErrorException('Could not update author, try again later!');
+    }
   }
+
 
   async remove(id: number) {
     await this.authorsRepository.softDelete(id);
