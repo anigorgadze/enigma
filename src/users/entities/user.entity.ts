@@ -1,8 +1,12 @@
+import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +24,9 @@ export class UserEntity {
 
   @Column()
   imgUrl: string;
+
+  @OneToMany(() => PlaylistEntity , (playlist) => playlist.user)
+  playlists: PlaylistEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

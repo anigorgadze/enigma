@@ -14,6 +14,7 @@ export class UsersRepository {
   ) {}
 
   async create(createUserssDto: CreateUsersDto) {
+
     const SALT = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT);
     const newUser = this.usersRepository.create({
@@ -24,12 +25,15 @@ export class UsersRepository {
   }
 
   async findAll() {
-    return await this.usersRepository.createQueryBuilder('user').getMany();
+    return await this.usersRepository.createQueryBuilder('user')
+    .leftJoinAndSelect('user.playlists','playlist')
+    .getMany();
   }
 
   async findOne(id: number) {
     return await this.usersRepository
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.playlists','playlist')
       .where('user.id =:id', { id })
       .getOne();
   }
@@ -52,6 +56,7 @@ export class UsersRepository {
 
     return await this.usersRepository
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.playlists','playlist')
       .where('user.id =:id', { id })
       .getOne();
   }

@@ -15,6 +15,7 @@ export class PlaylistsRepository {
   async create(createPlaylistDto: CreatePlaylistDto) {
     const newPlaylist = new PlaylistEntity();
     newPlaylist.title = createPlaylistDto.title;
+    newPlaylist.userId = createPlaylistDto.userId
 
     if (createPlaylistDto.musicsIds) {
       newPlaylist.musics = createPlaylistDto.musicsIds.map(
