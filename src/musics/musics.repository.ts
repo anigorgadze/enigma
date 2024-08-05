@@ -1,21 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateMusicsDto } from './dto/create-musics.dto';
 import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
+import { AuthorEntity } from 'src/authors/entities/author.entity';
 
 @Injectable()
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
     private musicsRepository: Repository<MusicEntity>,
-  ) {}
+  ) { }
 
   async create(createMusicsDto: CreateMusicsDto) {
-    const newMusic = this.musicsRepository.create(createMusicsDto);
-    return await this.musicsRepository.save(newMusic);
+
+    const newMusic = new MusicEntity()
+    newMusic.title = createMusicsDto.title
+    newMusic.coverImgUrl = createMusicsDto.coverImgUrl
+    newMusic.audioUrl = createMusicsDto.audioUrl
+
+
+
+    try {
+      await this.musicsRepository.save(newMusic)
+      return newMusic
+    } catch (exc) {
+      throw new InternalServerErrorException('Could not create music, try again later!')
+    }
   }
+
 
   findByTitle(search: string) {
     return this.musicsRepository
@@ -27,12 +41,17 @@ export class MusicsRepository {
   }
 
   async findAll() {
-    return await this.musicsRepository.createQueryBuilder('music').getMany();
+    return await this.musicsRepository.createQueryBuilder('music')
+      .leftJoinAndSelect('music.authors', 'author')
+      .leftJoinAndSelect('music.albums', 'album')
+      .getMany();
   }
 
   async findOne(id: number) {
     return await this.musicsRepository
       .createQueryBuilder('music')
+      .leftJoinAndSelect('music.authors', 'author')
+      .leftJoinAndSelect('music.albums', 'album')
       .where('music.id =:id', { id })
       .getOne();
   }

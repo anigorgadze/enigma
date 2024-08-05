@@ -9,8 +9,12 @@ export class CreateAuthorsDto {
 
   @IsUrl()
   imgUrl: string;
+  
+  @IsNumber({}, { each: true })
+  musicsIds: number[]
 
-  @IsNumber()
+  @IsNumber({}, { each: true })
   @IsOptional()
-  userId: number;
+  albumsIds: number[];
+
 }

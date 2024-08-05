@@ -1,8 +1,13 @@
+import { IsNumber } from 'class-validator';
+import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { MusicEntity } from 'src/musics/entities/music.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,6 +28,13 @@ export class AuthorEntity {
 
   @Column({ nullable: true })
   userId: number;
+
+  @ManyToMany(() => MusicEntity, (music) => music.authors , {cascade:true})
+  @JoinTable()
+  musics: MusicEntity[];
+  
+  @ManyToMany(()=> AlbumEntity , (albums) => albums.authors)
+  albums: AlbumEntity[]
 
   @CreateDateColumn()
   createdAt: string;
