@@ -1,20 +1,23 @@
-import { IsDateString, IsString, IsUrl } from "class-validator";
+import { IsArray, IsDateString, IsNumber, IsString, IsUrl } from "class-validator";
 
 export class CreateAlbumsDto {
-   
-        @IsString()
-        title: string;
-    
-        @IsDateString()
-        releaseDate : Date;
-    
-        @IsUrl ({}, {each : true})
-        musics : string[];
-    
-        @IsString()
-        artistName: string;
 
-        @IsUrl()
-        coverUrl: string;
-        
-    }
+    @IsString()
+    title: string;
+
+    @IsDateString()
+    releaseDate: Date;
+
+    @IsString()
+    artistName: string;
+
+    @IsUrl()
+    coverUrl: string;
+
+    @IsNumber({}, { each: true })
+    musicsIds: number[]
+
+    @IsNumber({}, { each: true })
+    authorsIds: number[]
+
+}
