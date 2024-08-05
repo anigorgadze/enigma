@@ -4,7 +4,7 @@ import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
-import { AuthorEntity } from 'src/authors/entities/author.entity';
+
 
 @Injectable()
 export class MusicsRepository {

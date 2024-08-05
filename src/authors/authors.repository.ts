@@ -84,7 +84,6 @@ if(createAuthorsDto.musicsIds) {
  
     author.musics = updateAuthorsDto.musicsIds.map(id => ({ id } as MusicEntity));
   
-
   author.albums = updateAuthorsDto.albumsIds.map(id => ({ id } as AlbumEntity));
       try {
       await this.authorsRepository.save(author);

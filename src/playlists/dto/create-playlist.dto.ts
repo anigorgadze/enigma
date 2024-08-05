@@ -7,9 +7,10 @@ export class CreatePlaylistDto {
     @MaxLength(30)
     title: string;
 
+    @IsNumber({}, { each: true })
+    musicsIds: number[]
 
-    @IsNumber()
-    musicId: number
+    
 
 }
 

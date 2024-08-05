@@ -9,7 +9,6 @@ export class PlaylistEntity {
     @Column({type: 'varchar'})
     title: string;
 
-
     @ManyToMany(() => MusicEntity, (music) => music.playlist)
     @JoinTable()
     musics: MusicEntity[];
