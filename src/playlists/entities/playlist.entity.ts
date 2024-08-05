@@ -1,4 +1,5 @@
 import { MusicEntity } from 'src/musics/entities/music.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,6 +7,8 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,7 +23,13 @@ export class PlaylistEntity {
 
   @ManyToMany(() => MusicEntity, (music) => music.playlist)
   @JoinTable()
-  musics: MusicEntity[];
+  musics: MusicEntity[]; 
+
+  @ManyToOne(() => UserEntity , (user) => user.playlists) 
+  user: UserEntity;
+
+  @Column()
+  userId: number;
 
   @CreateDateColumn()
   createdAt: Date;
