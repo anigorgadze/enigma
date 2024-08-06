@@ -9,6 +9,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { SearchModule } from './search/search.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import 'dotenv/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import 'dotenv/config';
     }),
     SearchModule,
     PlaylistsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,8 +6,4 @@ export class CreateUsersDto {
 
   @IsString()
   password: string;
-
-  @IsString()
-  imgUrl: string;
-
 }
