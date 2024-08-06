@@ -3,22 +3,16 @@ import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MusicEntity } from 'src/musics/entities/music.entity';
-import * as dotenv from 'dotenv'
-import {v4 as uuidv4} from 'uuid'
-import { log } from 'console';
+import * as dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
 
-dotenv.config()
+dotenv.config();
 
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCSESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCSESS_KEY,
-    region:process.env.AWS_REGION
-    
-}) 
-
-console.log( process.env.AWS_ACCSESS_KEY_ID)
-console.log( process.env.AWS_SECRET_ACCSESS_KEY)
-console.log(process.env.AWS_REGION)
+  accessKeyId: process.env.AWS_ACCSESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCSESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 @Injectable()
 export class FilesService {
@@ -29,34 +23,38 @@ export class FilesService {
     private readonly musicsRepository: Repository<MusicEntity>,
   ) {}
 
-  async uploadFile(file): Promise<MusicEntity> {
-    const randomFileName= `${uuidv4()}_${file.originalname}`
-    const params = {
+  async uploadFiles(audioFile, coverFile, title: string): Promise<MusicEntity> {
+    const audioFileName = `${uuidv4()}_${audioFile.originalname}`;
+    const coverFileName = `${uuidv4()}_${coverFile.originalname}`;
 
+    const audioParams = {
       Bucket: 'engm-bucket',
-      Key: randomFileName,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Key: audioFileName,
+      Body: audioFile.buffer,
+      ContentType: audioFile.mimetype
     };
-   
-    
+
+    const coverParams = {
+      Bucket: 'engm-bucket',
+      Key: coverFileName,
+      Body: coverFile.buffer,
+      ContentType: coverFile.mimetype
+    };
+
 
     try {
-     
-      const data = await this.s3.upload(params).promise();
-      const fileUrl = data.Location;
+      const audioData = await this.s3.upload(audioParams).promise();
+      const coverData = await this.s3.upload(coverParams).promise();
 
-      
       const newMusic = new MusicEntity();
-      newMusic.audioUrl = fileUrl;
+      newMusic.audioUrl = audioData.Location;
+      newMusic.coverImgUrl = coverData.Location;
+      newMusic.title = title
       
-
       return await this.musicsRepository.save(newMusic);
     } catch (error) {
-      console.error('Error uploading file:', error);
-      throw new InternalServerErrorException('Failed to upload file');
+      console.error('Error uploading files:', error);
+      throw new InternalServerErrorException('Failed to upload files');
     }
   }
 }
-
-// m.p[ailode]

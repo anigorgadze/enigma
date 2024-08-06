@@ -1,18 +1,23 @@
-import { Controller, Post, Param, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Body, Controller, InternalServerErrorException, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
-import { MusicEntity } from 'src/musics/entities/music.entity';
+import { title } from 'process';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file){
-    const music = await this.filesService.uploadFile(file);
-    return  music; 
-}
-
-
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'audio', maxCount: 1 },
+    { name: 'cover', maxCount: 1 },
+  ]))
+  async uploadFiles(@UploadedFiles() files , @Body('title') title: string) {
+    const { audio, cover} = files;
+    if (!audio || !cover ) {
+      throw new InternalServerErrorException('Both audio and cover files are required');
+    }
+    const music = await this.filesService.uploadFiles(audio[0], cover[0] , title);
+    return music;
+  }
 }
