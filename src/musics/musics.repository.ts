@@ -15,14 +15,16 @@ export class MusicsRepository {
   ) {}
   async create(
     createMusicsDto: CreateMusicsDto,
-    picture: Express.Multer.File,
-    audio: Express.Multer.File,
+    picture: string,
+    audio: string,
   ) {
     const newMusic = new MusicEntity();
     newMusic.title = createMusicsDto.title;
     try {
-      newMusic.coverImgUrl = await this.filesService.uploadFile(picture);   
-      newMusic.audioUrl = await this.filesService.uploadFile(audio);
+
+      newMusic.coverImgUrl = picture;   
+      newMusic.audioUrl = audio; 
+
       await this.musicsRepository.save(newMusic);
       return newMusic;
     } catch (exc) {
