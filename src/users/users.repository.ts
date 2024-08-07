@@ -14,26 +14,29 @@ export class UsersRepository {
   ) {}
 
   async create(createUserssDto: CreateUsersDto) {
+    const newUser = new UserEntity();
+    newUser.email = createUserssDto.email;
+    newUser.password = bcrypt.hashSync(createUserssDto.password, 10);
+    return this.usersRepository.save(newUser);
+  }
 
-    const SALT = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(createUserssDto.password, SALT);
-    const newUser = this.usersRepository.create({
-      ...createUserssDto,
-      password: hashedPassword,
+  async findByEmail(email: string) {
+    return await this.usersRepository.findOne({
+      where: { email },
     });
-    return await this.usersRepository.save(newUser);
   }
 
   async findAll() {
-    return await this.usersRepository.createQueryBuilder('user')
-    .leftJoinAndSelect('user.playlists','playlist')
-    .getMany();
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.playlists', 'playlist')
+      .getMany();
   }
 
   async findOne(id: number) {
     return await this.usersRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists','playlist')
+      .leftJoinAndSelect('user.playlists', 'playlist')
       .where('user.id =:id', { id })
       .getOne();
   }
@@ -46,17 +49,15 @@ export class UsersRepository {
         salt,
       );
     }
-
     await this.usersRepository
       .createQueryBuilder('user')
       .update()
       .set(updateUsersDto)
       .where('user.id =:id', { id })
       .execute();
-
     return await this.usersRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists','playlist')
+      .leftJoinAndSelect('user.playlists', 'playlist')
       .where('user.id =:id', { id })
       .getOne();
   }

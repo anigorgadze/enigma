@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UpdateUsersDto } from './dto/update-users.dto';
@@ -7,7 +7,14 @@ import { UpdateUsersDto } from './dto/update-users.dto';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  create(createUsersDto: CreateUsersDto) {
+  async create(createUsersDto: CreateUsersDto) {
+    const userExist = await this.usersRepository.findByEmail(
+      createUsersDto.email,
+    );
+
+    if (userExist) {
+      throw new UnauthorizedException('User exits');
+    }
     return this.usersRepository.create(createUsersDto);
   }
 
