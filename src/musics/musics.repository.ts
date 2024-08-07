@@ -4,21 +4,25 @@ import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
-    private musicsRepository: Repository<MusicEntity>,
+    private musicsRepository: Repository<MusicEntity>, 
+    private filesService: FilesService
   ) {}
-
-  async create(createMusicsDto: CreateMusicsDto) {
+  async create(
+    createMusicsDto: CreateMusicsDto,
+    picture: Express.Multer.File,
+    audio: Express.Multer.File,
+  ) {
     const newMusic = new MusicEntity();
     newMusic.title = createMusicsDto.title;
-    newMusic.coverImgUrl = createMusicsDto.coverImgUrl;
-    newMusic.audioUrl = createMusicsDto.audioUrl;
-
     try {
+      newMusic.coverImgUrl = await this.filesService.uploadFile(picture);   
+      newMusic.audioUrl = await this.filesService.uploadFile(audio);
       await this.musicsRepository.save(newMusic);
       return newMusic;
     } catch (exc) {
@@ -27,6 +31,7 @@ export class MusicsRepository {
       );
     }
   }
+
 
   findByTitle(search: string) {
     return this.musicsRepository

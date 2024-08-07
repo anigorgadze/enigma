@@ -3,13 +3,17 @@ import { MusicsRepository } from './musics.repository';
 import { CreateMusicsDto } from './dto/create-musics.dto';
 import { UpdateMusicsDto } from './dto/update-musics.dto';
 
+
 @Injectable()
 export class MusicsService {
-  constructor(private readonly musicsRepository: MusicsRepository) {}
+  constructor(private readonly musicsRepository: MusicsRepository,) {}
 
-  create(createMusicsDto: CreateMusicsDto) {
-    return this.musicsRepository.create(createMusicsDto);
-  }
+async create(createMusicsDto: CreateMusicsDto, 
+  picture: Express.Multer.File,
+  audio: Express.Multer.File) 
+{
+  return this.musicsRepository.create(createMusicsDto, picture, audio)
+}
 
   findAll() {
     return this.musicsRepository.findAll();
