@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorsModule } from './authors/authors.module';
 import { SearchModule } from './search/search.module';
 import { PlaylistsModule } from './playlists/playlists.module';
+import { FilesModule } from './files/files.module';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
 
@@ -29,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     SearchModule,
     PlaylistsModule,
+    FilesModule,
     AuthModule
   ],
   controllers: [AppController],
