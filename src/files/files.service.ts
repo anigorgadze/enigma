@@ -30,7 +30,7 @@ export class FilesService {
     };
     try {
       const data = await this.s3.upload(params).promise();
-      return data.Location;
+      return data
     } catch (error) {
       throw new InternalServerErrorException('Failed to upload file');
     }

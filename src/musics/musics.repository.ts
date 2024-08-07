@@ -20,13 +20,10 @@ export class MusicsRepository {
   ) {
     const newMusic = new MusicEntity();
     newMusic.title = createMusicsDto.title;
+    newMusic.coverImgUrl = picture;   
+    newMusic.audioUrl = audio; 
     try {
-
-      newMusic.coverImgUrl = picture;   
-      newMusic.audioUrl = audio; 
-
-      await this.musicsRepository.save(newMusic);
-      return newMusic;
+      return await this.musicsRepository.save(newMusic);;
     } catch (exc) {
       throw new InternalServerErrorException(
         'Could not create music, try again later!',

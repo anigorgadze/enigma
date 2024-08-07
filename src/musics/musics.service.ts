@@ -16,7 +16,7 @@ async create(createMusicsDto: CreateMusicsDto,
 {
   const coverImgUrl = await this.filesService.uploadFile(picture);   
   const audioUrl = await this.filesService.uploadFile(audio); 
-  return this.musicsRepository.create(createMusicsDto, coverImgUrl, audioUrl)
+  return this.musicsRepository.create(createMusicsDto, coverImgUrl.Location, audioUrl.Location)
 }
 
   findAll() {
