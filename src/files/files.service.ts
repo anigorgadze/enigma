@@ -15,19 +15,21 @@ AWS.config.update({
 export class FilesService {
   private readonly s3 = new AWS.S3();
 
-  async uploadFile(file:Express.Multer.File) {
+  async uploadFile(file: Express.Multer.File, directory = '') {
     if (!file || !file.buffer) {
       throw new InternalServerErrorException('File data is missing');
     }
 
-  
+
     const fileName = `${uuidv4()}_${file.originalname}`;
     const params = {
       Bucket: 'engm-bucket',
-      Key: fileName,
+      Key: `${directory}/${fileName}`,
       Body: file.buffer,
       ContentType: file.mimetype,
     };
+
+
     try {
       const data = await this.s3.upload(params).promise();
       return data

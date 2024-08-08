@@ -14,8 +14,8 @@ async create(createMusicsDto: CreateMusicsDto,
   picture: Express.Multer.File,
   audio: Express.Multer.File) 
 {
-  const coverImgUrl = await this.filesService.uploadFile(picture);   
-  const audioUrl = await this.filesService.uploadFile(audio); 
+  const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');   
+  const audioUrl = await this.filesService.uploadFile(audio, 'Musics'); 
   return this.musicsRepository.create(createMusicsDto, coverImgUrl.Location, audioUrl.Location)
 }
 

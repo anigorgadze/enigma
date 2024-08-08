@@ -18,7 +18,7 @@ export class AuthorEntity {
   id: number;
 
   @Column({ type: 'varchar' })
-  name: string;
+  artistName: string;
 
   @Column({ nullable: true })
   releaseDate: Date;
@@ -44,4 +44,6 @@ export class AuthorEntity {
 
   @DeleteDateColumn()
   deletedAt: string;
+
+
 }

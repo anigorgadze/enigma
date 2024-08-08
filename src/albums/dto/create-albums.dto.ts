@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
@@ -16,12 +17,11 @@ export class CreateAlbumsDto {
   @IsString()
   artistName: string;
 
-  @IsUrl()
-  coverUrl: string;
-
   @IsNumber({}, { each: true })
+  @Transform(({ value }) => value.map(Number))
   musicsIds: number[];
 
   @IsNumber({}, { each: true })
+  @Transform(({ value }) => value.map(Number))
   authorsIds: number[];
 }
