@@ -12,18 +12,11 @@ export class CreateAuthorsDto {
   artistName: string;
 
   @IsDateString()
-  releaseDate: string;
-
-  // @IsUrl()
-  // imgUrl: string;
-
-  // @IsNumber({}, { each: true })
-  // musicsIds: number[];
+  releaseDate: Date;
 
   @IsNumber({}, { each: true })
   @Transform(({ value }) => value.map(Number))
   musicsIds: number[];
-
 
   @IsNumber({}, { each: true })
   @IsOptional()

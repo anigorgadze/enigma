@@ -19,9 +19,8 @@ export class AuthorsRepository {
     const newAuthor = new AuthorEntity();
     newAuthor.artistName =  createAuthorsDto.artistName;
     newAuthor.imgUrl = picture;
-    console.log('repo' , picture);
-    
-    
+    newAuthor.releaseDate = createAuthorsDto.releaseDate
+        
     if (createAuthorsDto.musicsIds) {
       newAuthor.musics = createAuthorsDto.musicsIds.map(
         (id) =>
