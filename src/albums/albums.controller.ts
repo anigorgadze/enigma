@@ -34,8 +34,6 @@ export class AlbumsController {
     @Body() createAlbumsDto: CreateAlbumsDto,
   ) {
     const  {picture}  = files;
-
-    // console.log(picture);
     
     if (!picture ) {
       throw new InternalServerErrorException('Files are missing');

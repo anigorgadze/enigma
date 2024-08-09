@@ -19,8 +19,6 @@ export class AlbumsRepository {
     const newAlbum = new AlbumEntity();
     newAlbum.artistName = createAlbumsDto.artistName;
     newAlbum.coverUrl = picture;
-    // console.log(picture);
-    
     newAlbum.title = createAlbumsDto.title;
     newAlbum.releaseDate = createAlbumsDto.releaseDate;
     newAlbum.musics = createAlbumsDto.musicsIds.map(

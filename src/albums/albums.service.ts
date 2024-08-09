@@ -13,8 +13,6 @@ export class AlbumsService {
       picture: Express.Multer.File) {
 
     const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');  
-    // console.log(coverImgUrl); 
-    //servisshi shemodis
      
     return this.albumsRepository.create(createAlbumsDto ,coverImgUrl.Location);
     
