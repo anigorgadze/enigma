@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsDateString,
   IsNumber,
@@ -8,15 +9,13 @@ import {
 
 export class CreateAuthorsDto {
   @IsString()
-  name: string;
+  artistName: string;
 
   @IsDateString()
-  releaseDate: string;
-
-  @IsUrl()
-  imgUrl: string;
+  releaseDate: Date;
 
   @IsNumber({}, { each: true })
+  @Transform(({ value }) => value.map(Number))
   musicsIds: number[];
 
   @IsNumber({}, { each: true })

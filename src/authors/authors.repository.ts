@@ -14,11 +14,13 @@ export class AuthorsRepository {
     private readonly authorsRepository: Repository<AuthorEntity>,
   ) {}
 
-  async create(createAuthorsDto: CreateAuthorsDto) {
+  async create(createAuthorsDto: CreateAuthorsDto ,
+    picture: string, ) {
     const newAuthor = new AuthorEntity();
-    newAuthor.name = createAuthorsDto.name;
-    newAuthor.imgUrl = createAuthorsDto.imgUrl;
-
+    newAuthor.artistName =  createAuthorsDto.artistName;
+    newAuthor.imgUrl = picture;
+    newAuthor.releaseDate = createAuthorsDto.releaseDate
+        
     if (createAuthorsDto.musicsIds) {
       newAuthor.musics = createAuthorsDto.musicsIds.map(
         (id) =>
@@ -82,7 +84,7 @@ export class AuthorsRepository {
       throw new InternalServerErrorException('Author not found');
     }
 
-    author.name = updateAuthorsDto.name;
+    author.artistName = updateAuthorsDto.artistName;
     author.releaseDate = new Date(updateAuthorsDto.releaseDate);
     author.imgUrl = updateAuthorsDto.imgUrl;
 

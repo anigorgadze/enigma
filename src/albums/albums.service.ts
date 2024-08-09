@@ -2,13 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { AlbumsRepository } from './albums.repository';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private readonly albumsRepository: AlbumsRepository) {}
+  constructor(private readonly albumsRepository: AlbumsRepository , 
+              private readonly filesService: FilesService) {}
 
-  create(createAlbumsDto: CreateAlbumsDto) {
-    return this.albumsRepository.create(createAlbumsDto);
+  async create(createAlbumsDto: CreateAlbumsDto ,
+      picture: Express.Multer.File) {
+
+    const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');  
+     
+    return this.albumsRepository.create(createAlbumsDto ,coverImgUrl.Location);
+    
+    
   }
 
   findAll() {

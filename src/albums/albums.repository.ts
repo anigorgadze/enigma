@@ -11,13 +11,14 @@ import { AuthorEntity } from 'src/authors/entities/author.entity';
 export class AlbumsRepository {
   constructor(
     @InjectRepository(AlbumEntity)
-    private albumsRepository: Repository<AlbumEntity>,
+    private albumsRepository: Repository<AlbumEntity>
   ) {}
 
-  async create(createAlbumsDto: CreateAlbumsDto) {
+  async create(createAlbumsDto: CreateAlbumsDto,
+    picture: string) {
     const newAlbum = new AlbumEntity();
     newAlbum.artistName = createAlbumsDto.artistName;
-    newAlbum.coverUrl = createAlbumsDto.coverUrl;
+    newAlbum.coverUrl = picture;
     newAlbum.title = createAlbumsDto.title;
     newAlbum.releaseDate = createAlbumsDto.releaseDate;
     newAlbum.musics = createAlbumsDto.musicsIds.map(
@@ -73,7 +74,7 @@ export class AlbumsRepository {
 
     album.title = album.title;
     album.releaseDate = new Date(updateAlbumsDto.releaseDate);
-    album.coverUrl = updateAlbumsDto.coverUrl;
+    // album.coverUrl = updateAlbumsDto.coverUrl;
 
     album.musics = updateAlbumsDto.musicsIds.map(
       (id) => ({ id }) as MusicEntity,

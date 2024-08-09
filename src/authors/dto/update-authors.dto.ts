@@ -1,3 +1,5 @@
 import { CreateAuthorsDto } from './create-authors.dto';
 
-export class UpdateAuthorsDto extends CreateAuthorsDto {}
+export class UpdateAuthorsDto extends CreateAuthorsDto {
+  imgUrl: string;
+}

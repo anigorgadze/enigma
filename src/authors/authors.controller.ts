@@ -3,21 +3,46 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+
+interface Files {
+  picture: Express.Multer.File[];
+}
+
 
 @Controller('authors')
 export class AuthorsController {
-  constructor(private readonly authorsService: AuthorsService) {}
+  constructor(private readonly authorsService: AuthorsService) { }
+
   @Post()
-  async create(@Body() createAuthorDto: CreateAuthorsDto) {
-    return await this.authorsService.create(createAuthorDto);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+    ]),
+  )
+  create(
+    @UploadedFiles() files: Files,
+    @Body() createAuthorsDto: CreateAuthorsDto,
+  ) {
+    const { picture } = files;
+  
+    if (!picture) {
+      throw new InternalServerErrorException('Files are missing');
+    }
+    return this.authorsService.create(createAuthorsDto, picture[0]);
   }
+
+  
   @Get()
   async findAll() {
     return await this.authorsService.findAll();
