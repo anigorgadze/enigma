@@ -13,10 +13,14 @@ export class UsersRepository {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserssDto: CreateUsersDto) {
+  async create(createUsersDto: CreateUsersDto) {
     const newUser = new UserEntity();
-    newUser.email = createUserssDto.email;
-    newUser.password = bcrypt.hashSync(createUserssDto.password, 10);
+    newUser.email = createUsersDto.email;
+    newUser.password = bcrypt.hashSync(createUsersDto.password, 10);
+
+    if (createUsersDto.isAdmin !== undefined) {
+      newUser.isAdmin = createUsersDto.isAdmin;
+    }
     return this.usersRepository.save(newUser);
   }
 

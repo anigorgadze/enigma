@@ -25,6 +25,10 @@ export class UserEntity {
   @Column()
   imgUrl: string;
 
+
+  @Column({ default: false })
+  isAdmin: boolean;
+
   @OneToMany(() => PlaylistEntity , (playlist) => playlist.user)
   playlists: PlaylistEntity[];
 
