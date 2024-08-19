@@ -4,14 +4,12 @@ import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
-import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
-    private musicsRepository: Repository<MusicEntity>, 
-    private filesService: FilesService
+    private musicsRepository: Repository<MusicEntity>,
   ) {}
   async create(
     createMusicsDto: CreateMusicsDto,
@@ -20,17 +18,26 @@ export class MusicsRepository {
   ) {
     const newMusic = new MusicEntity();
     newMusic.title = createMusicsDto.title;
-    newMusic.coverImgUrl = picture;   
-    newMusic.audioUrl = audio; 
+    newMusic.coverImgUrl = picture;
+    newMusic.audioUrl = audio;
     try {
-      return await this.musicsRepository.save(newMusic);;
-    } catch (exc) {
+      return await this.musicsRepository.save(newMusic);
+    } catch (err) {
       throw new InternalServerErrorException(
         'Could not create music, try again later!',
       );
     }
   }
 
+  async listensCounter(music: MusicEntity) {
+    try {
+      return await this.musicsRepository.save(music);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Could not save music, try again later!',
+      );
+    }
+  }
 
   findByTitle(search: string) {
     return this.musicsRepository

@@ -11,6 +11,7 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { FilesModule } from './files/files.module';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
+import { ListenRecordsModule } from './listens/listens.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { AuthModule } from './auth/auth.module';
     SearchModule,
     PlaylistsModule,
     FilesModule,
-    AuthModule
+    AuthModule,
+    ListenRecordsModule
   ],
   controllers: [AppController],
   providers: [AppService],
