@@ -41,6 +41,7 @@ export class UsersRepository {
       .getOne();
   }
 
+
   async update(id: number, updateUsersDto: UpdateUsersDto) {
     if (updateUsersDto.password) {
       const salt = await bcrypt.genSalt();

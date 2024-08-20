@@ -10,12 +10,18 @@ export class UsersService {
   async create(createUsersDto: CreateUsersDto) {
     const userExist = await this.usersRepository.findByEmail(
       createUsersDto.email,
-    );
+    )
+
+    
 
     if (userExist) {
       throw new UnauthorizedException('User exits');
     }
     return this.usersRepository.create(createUsersDto);
+  }
+
+  async findByEmail(email:string){
+    return await this.usersRepository.findByEmail(email)
   }
 
   findAll() {
