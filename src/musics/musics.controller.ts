@@ -46,6 +46,11 @@ export class MusicsController {
     return this.musicsService.findAll();
   }
 
+  @Get('tophits')
+  topHits(){
+    return this.musicsService.topHits()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.musicsService.findOne(+id);
