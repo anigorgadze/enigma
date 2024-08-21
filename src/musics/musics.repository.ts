@@ -45,7 +45,7 @@ export class MusicsRepository {
       .createQueryBuilder('music')
       .leftJoinAndSelect('music.authors', 'author')
       .leftJoinAndSelect('music.albums', 'album')
-      .orderBy('music.playCount', 'ASC')
+      .orderBy('music.playCount', 'DESC')
       .take(4)
       .getMany();
   }
