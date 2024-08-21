@@ -55,7 +55,7 @@ export class MusicsController {
   }
 
 
-  @Roles(Role.Admin)
+  @Roles(Role.User)
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Get()
   findAll() {
