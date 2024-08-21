@@ -55,8 +55,7 @@ export class MusicsController {
   }
 
 
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Public()
   @Get()
   findAll() {
     return this.musicsService.findAll();
