@@ -1,19 +1,25 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './auth/roles.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule , {cors: true});
-  app.enableCors({
-    origin:"*",
-    allowedHeaders:"*"
-  })
+  const app = await NestFactory.create(AppModule,{cors:true});
+
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
+  );
+  const reflector = app.get(Reflector);
+  
+  app.useGlobalGuards(
+    // new JwtAuthGuard(reflector),
+    // new RolesGuard(reflector),
   );
 
   await app.listen(3000);

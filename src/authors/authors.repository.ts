@@ -12,15 +12,14 @@ export class AuthorsRepository {
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
-  ) {}
+  ) { }
 
-  async create(createAuthorsDto: CreateAuthorsDto ,
-    picture: string, ) {
+  async create(createAuthorsDto: CreateAuthorsDto,
+  ) {
     const newAuthor = new AuthorEntity();
-    newAuthor.artistName =  createAuthorsDto.artistName;
-    newAuthor.imgUrl = picture;
+    newAuthor.artistName = createAuthorsDto.artistName;
     newAuthor.releaseDate = createAuthorsDto.releaseDate
-        
+
     if (createAuthorsDto.musicsIds) {
       newAuthor.musics = createAuthorsDto.musicsIds.map(
         (id) =>
@@ -86,15 +85,31 @@ export class AuthorsRepository {
 
     author.artistName = updateAuthorsDto.artistName;
     author.releaseDate = new Date(updateAuthorsDto.releaseDate);
-    author.imgUrl = updateAuthorsDto.imgUrl;
 
-    author.musics = updateAuthorsDto.musicsIds.map(
-      (id) => ({ id }) as MusicEntity,
-    );
 
-    author.albums = updateAuthorsDto.albumsIds.map(
-      (id) => ({ id }) as AlbumEntity,
-    );
+
+    if (updateAuthorsDto.musicsIds) {
+      const currenMusicIds = author.musics.map((author) => author.id);
+      const newMusicIds = updateAuthorsDto.musicsIds.filter(
+        (id) => !currenMusicIds.includes(id),
+      );
+      const allMusicIds = [...currenMusicIds, ...newMusicIds];
+
+      author.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
+    }
+
+    if (updateAuthorsDto.albumsIds) {
+      const currentAlbumIds = author.albums.map((author) => author.id);
+      const newAlbumIds = updateAuthorsDto.albumsIds.filter(
+        (id) => !currentAlbumIds.includes(id),
+      );
+      const allAlbumIds = [...currentAlbumIds, ...newAlbumIds];
+
+      author.albums = allAlbumIds.map((id) => ({ id }) as AlbumEntity);
+    }
+
+
+
     try {
       await this.authorsRepository.save(author);
       return author;

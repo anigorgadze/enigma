@@ -7,10 +7,12 @@ import { FilesService } from 'src/files/files.service';
 @Injectable()
 export class AlbumsService {
   constructor(private readonly albumsRepository: AlbumsRepository , 
-              private readonly filesService: FilesService) {}
+              private readonly filesService: FilesService,
+              ) {}
 
   async create(createAlbumsDto: CreateAlbumsDto ,
-      picture: Express.Multer.File) {
+      picture: Express.Multer.File,
+      ) {
 
     const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');  
      
@@ -18,6 +20,7 @@ export class AlbumsService {
     
     
   }
+
 
   findAll() {
     return this.albumsRepository.findAll();
