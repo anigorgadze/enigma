@@ -11,6 +11,9 @@ import { PlaylistsModule } from './playlists/playlists.module';
 import { FilesModule } from './files/files.module';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD, Reflector } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [
@@ -34,6 +37,7 @@ import { AuthModule } from './auth/auth.module';
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService ,RolesGuard,Reflector,JwtAuthGuard ]
+   
 })
 export class AppModule {}

@@ -28,7 +28,7 @@ export class AlbumEntity {
   artistName: string;
 
   @Column({ type: 'varchar' })
-  coverUrl: string;
+  coverImgUrl: string;
 
   @ManyToMany(() => MusicEntity, (music) => music.albums, { cascade: true })
   @JoinTable()

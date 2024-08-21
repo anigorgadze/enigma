@@ -19,6 +19,7 @@ import { Role } from 'src/auth/role.enum';
 import { Roles } from 'src/auth/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { Public } from 'src/auth/public.decorator';
 
 interface Files {
   picture?: Express.Multer.File[];
@@ -62,8 +63,7 @@ export class MusicsController {
   }
 
 
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.musicsService.findOne(+id);

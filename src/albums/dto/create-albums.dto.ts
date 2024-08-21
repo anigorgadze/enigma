@@ -14,14 +14,21 @@ export class CreateAlbumsDto {
   @IsDateString()
   releaseDate: Date;
 
+  // @IsString()
+  // imgUrl: string;
+
   @IsString()
   artistName: string;
 
-  @IsNumber({}, { each: true })
-  @Transform(({ value }) => value.map(Number))
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   musicsIds: number[];
 
-  @IsNumber({}, { each: true })
-  @Transform(({ value }) => value.map(Number))
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   authorsIds: number[];
+
+  @IsString()
+  coverImgUrl:string
 }
+

@@ -7,34 +7,31 @@ import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { AuthorEntity } from 'src/authors/entities/author.entity';
 
+
 @Injectable()
 export class AlbumsRepository {
   constructor(
     @InjectRepository(AlbumEntity)
     private albumsRepository: Repository<AlbumEntity>
-  ) {}
+  ) { }
 
   async create(createAlbumsDto: CreateAlbumsDto,
     picture: string) {
     const newAlbum = new AlbumEntity();
     newAlbum.artistName = createAlbumsDto.artistName;
-    newAlbum.coverUrl = picture;
+    newAlbum.coverImgUrl = picture;
     newAlbum.title = createAlbumsDto.title;
     newAlbum.releaseDate = createAlbumsDto.releaseDate;
-    newAlbum.musics = createAlbumsDto.musicsIds.map(
-      (id) =>
-        ({
-          id,
-        }) as MusicEntity,
-    );
 
     try {
       await this.albumsRepository.save(newAlbum);
       return newAlbum;
     } catch (exc) {
+      console.log(exc)
       throw new InternalServerErrorException(
         'Could not create album, try again later!',
       );
+
     }
   }
 
@@ -74,15 +71,30 @@ export class AlbumsRepository {
 
     album.title = album.title;
     album.releaseDate = new Date(updateAlbumsDto.releaseDate);
-    // album.coverUrl = updateAlbumsDto.coverUrl;
+    album.coverImgUrl = updateAlbumsDto.coverImgUrl
 
-    album.musics = updateAlbumsDto.musicsIds.map(
-      (id) => ({ id }) as MusicEntity,
-    );
+   
 
-    album.authors = updateAlbumsDto.authorsIds.map(
-      (id) => ({ id }) as AuthorEntity,
-    );
+    if (updateAlbumsDto.musicsIds) {
+      const currentMusicIds = album.musics.map((music) => music.id);
+      const newMusicIds = updateAlbumsDto.musicsIds.filter(
+        (id) => !currentMusicIds.includes(id),
+      );
+      const allMusicIds = [...currentMusicIds, ...newMusicIds];
+
+      album.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
+    }
+
+    if (updateAlbumsDto.authorsIds) {
+      const currentAuthorIds = album.authors.map((author) => author.id);
+      const newAuthorIds = updateAlbumsDto.authorsIds.filter(
+        (id) => !currentAuthorIds.includes(id),
+      );
+      const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
+
+      album.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
+    }
+
 
     try {
       await this.albumsRepository.save(album);

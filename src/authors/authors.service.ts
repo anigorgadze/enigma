@@ -2,18 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { AuthorsRepository } from './authors.repository';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
-import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class AuthorsService {
   constructor(private readonly authorsRepository: AuthorsRepository , 
-        private readonly filesService: FilesService) {}
+) {}
         
 async create(createAuthorsDto: CreateAuthorsDto, 
-  picture: Express.Multer.File,) 
+ ) 
 {
-  const imgUrl = await this.filesService.uploadFile(picture, 'Images');   
-  return this.authorsRepository.create(createAuthorsDto, imgUrl.Location)
+
+  return this.authorsRepository.create(createAuthorsDto)
 }
 
   async findAll() {
