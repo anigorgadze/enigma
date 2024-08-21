@@ -13,13 +13,13 @@ export class SearchService {
 
   async search(search: string) {
     const musics = await this.musicsRepository.findByTitle(search);
-    // const authors = await this.authorsRepository.findByName(search);
-    // const albums = await this.albumsRepository.findByTitle(search);
+    const authors = await this.authorsRepository.findByName(search);
+    const albums = await this.albumsRepository.findByTitle(search);
 
     return {
       musics,
-      // authors,
-      // albums,
+      authors,
+      albums,
     };
   }
 }
