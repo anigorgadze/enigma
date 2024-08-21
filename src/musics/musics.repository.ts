@@ -10,9 +10,9 @@ import { FilesService } from 'src/files/files.service';
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
-    private musicsRepository: Repository<MusicEntity>, 
+    private musicsRepository: Repository<MusicEntity>,
     private filesService: FilesService
-  ) {}
+  ) { }
   async create(
     createMusicsDto: CreateMusicsDto,
     picture: string,
@@ -20,8 +20,8 @@ export class MusicsRepository {
   ) {
     const newMusic = new MusicEntity();
     newMusic.title = createMusicsDto.title;
-    newMusic.coverImgUrl = picture;   
-    newMusic.audioUrl = audio; 
+    newMusic.coverImgUrl = picture;
+    newMusic.audioUrl = audio;
     try {
       return await this.musicsRepository.save(newMusic);;
     } catch (exc) {
@@ -38,6 +38,16 @@ export class MusicsRepository {
       .where('music.title LIKE :searchField', {
         searchField: `%${search}%`,
       })
+      .getMany();
+  }
+
+  async topHits() {
+    return await this.musicsRepository
+      .createQueryBuilder('music')
+      .leftJoinAndSelect('music.authors', 'author')
+      .leftJoinAndSelect('music.albums', 'album')
+      .orderBy('music.createdAt', 'DESC')
+      .take(4)
       .getMany();
   }
 

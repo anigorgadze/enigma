@@ -23,6 +23,10 @@ async create(createMusicsDto: CreateMusicsDto,
     return this.musicsRepository.findAll();
   }
 
+  topHits(){
+    return this.musicsRepository.topHits()
+  }
+
   findOne(id: number) {
     return this.musicsRepository.findOne(id);
   }
