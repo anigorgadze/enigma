@@ -1,3 +1,4 @@
+import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
 import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import {
   Column,
@@ -25,12 +26,15 @@ export class UserEntity {
   @Column()
   imgUrl: string;
 
-  @Column({default: false,type:'boolean'})
+  @Column({ default: false, type: 'boolean' })
   isAdmin: boolean;
 
-  @OneToMany(() => PlaylistEntity , (playlist) => playlist.user)
+  @OneToMany(() => PlaylistEntity, (playlist) => playlist.user)
   playlists: PlaylistEntity[];
 
+  @OneToMany(() => ListenRecordEntity, (listens) => listens.user)
+  listenRecords: ListenRecordEntity[];
+  
   @CreateDateColumn()
   createdAt: Date;
 

@@ -7,9 +7,11 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
 
 @Entity({ name: 'music' })
 export class MusicEntity {
@@ -24,6 +26,12 @@ export class MusicEntity {
 
   @Column({ type: 'varchar' })
   audioUrl: string;
+
+  @Column({ type: 'int', default: 0 })
+  playCount: number;
+
+  @OneToMany(() => ListenRecordEntity, (listens) => listens.music)
+  listenRecords: ListenRecordEntity[];
 
   @ManyToMany(() => AlbumEntity, (album) => album.musics)
   albums: AlbumEntity[];

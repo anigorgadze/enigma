@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
+import { ListenRecordsModule } from './listens/listens.module';
 
 @Module({
   imports: [
@@ -34,10 +35,10 @@ import { RolesGuard } from './auth/roles.guard';
     SearchModule,
     PlaylistsModule,
     FilesModule,
-    AuthModule
+    AuthModule,
+    ListenRecordsModule,
   ],
   controllers: [AppController],
-  providers: [AppService ,RolesGuard,Reflector,JwtAuthGuard ]
-   
+  providers: [AppService, RolesGuard, Reflector, JwtAuthGuard],
 })
 export class AppModule {}
