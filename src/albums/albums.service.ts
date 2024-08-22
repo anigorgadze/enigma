@@ -17,8 +17,6 @@ export class AlbumsService {
     const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');  
      
     return this.albumsRepository.create(createAlbumsDto ,coverImgUrl.Location);
-    
-    
   }
 
 

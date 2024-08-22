@@ -10,10 +10,12 @@ import {
 import { AuthorsService } from './authors.service';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
+import { Public } from 'src/auth/public.decorator';
 
 
 
 @Controller('authors')
+@Public()
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) { }
 

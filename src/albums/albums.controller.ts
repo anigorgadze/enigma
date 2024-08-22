@@ -44,8 +44,6 @@ export class AlbumsController {
     @Body() createAlbumsDto: CreateAlbumsDto,
     @Request()  req
   ) {
-    console.log('rame')
-    console.log(req)
     const { picture } = files;
 
     if (!picture) {
@@ -53,9 +51,6 @@ export class AlbumsController {
     }
     return this.albumsService.create(createAlbumsDto, picture[0] );
   }
-
-
-
 
   @Get()
   findAll() {
