@@ -14,14 +14,13 @@ export class CreateAuthorsDto {
   @IsDateString()
   releaseDate: Date;
 
-  @IsString()
-  coverImgUrl: string;
 
   @IsNumber({}, { each: true })
-  @Transform(({ value }) => value.map(Number))
+  @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
   musicsIds: number[];
 
   @IsNumber({}, { each: true })
   @IsOptional()
+  @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
   albumsIds: number[];
 }

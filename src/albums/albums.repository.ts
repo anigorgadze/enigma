@@ -74,7 +74,6 @@ export class AlbumsRepository {
     album.coverImgUrl = updateAlbumsDto.coverImgUrl
 
    
-
     if (updateAlbumsDto.musicsIds) {
       const currentMusicIds = album.musics.map((music) => music.id);
       const newMusicIds = updateAlbumsDto.musicsIds.filter(

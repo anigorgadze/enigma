@@ -27,8 +27,15 @@ async create(createAuthorsDto: CreateAuthorsDto,
     return await this.authorsRepository.findOne(id);
   }
 
-  async update(id: number, updateAuthorsDto: UpdateAuthorsDto) {
-    return await this.authorsRepository.update(id, updateAuthorsDto);
+ 
+  async update(id: number, updateAuthorsDto: UpdateAuthorsDto, picture?: Express.Multer.File) {
+    let coverImgUrl: string | undefined;
+    
+    if (picture) {
+      coverImgUrl = (await this.filesService.uploadFile(picture, 'Images')).Location;
+    }
+  
+    return await this.authorsRepository.update(id, updateAuthorsDto, coverImgUrl);
   }
 
   async remove(id: number) {
