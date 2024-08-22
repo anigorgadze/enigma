@@ -28,8 +28,15 @@ export class AlbumsService {
     return this.albumsRepository.findOne(id);
   }
 
-  update(id: number, updateAlbumsDto: UpdateAlbumsDto) {
-    return this.albumsRepository.update(id, updateAlbumsDto);
+
+  async update(id: number, updateAlbumsDto: UpdateAlbumsDto, picture?: Express.Multer.File) {
+    let coverImgUrl: string | undefined;
+    
+    if (picture) {
+      coverImgUrl = (await this.filesService.uploadFile(picture, 'Images')).Location;
+    }
+  
+    return await this.albumsRepository.update(id, updateAlbumsDto, coverImgUrl);
   }
 
   remove(id: number) {

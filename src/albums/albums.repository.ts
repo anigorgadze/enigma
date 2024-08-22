@@ -59,7 +59,7 @@ export class AlbumsRepository {
       .getMany();
   }
 
-  async update(id: number, updateAlbumsDto: UpdateAlbumsDto) {
+  async update(id: number, updateAlbumsDto: UpdateAlbumsDto , coverImgUrl?: string) {
     const album = await this.albumsRepository.findOne({
       where: { id },
       relations: ['musics', 'authors'],
@@ -69,10 +69,13 @@ export class AlbumsRepository {
       throw new InternalServerErrorException('Author not found');
     }
 
-    album.title = album.title;
-    album.releaseDate = new Date(updateAlbumsDto.releaseDate);
+    album.title = updateAlbumsDto.title;
+    album.releaseDate = updateAlbumsDto.releaseDate
     album.coverImgUrl = updateAlbumsDto.coverImgUrl
 
+    if (coverImgUrl) {
+      album.coverImgUrl = coverImgUrl;
+    }
    
     if (updateAlbumsDto.musicsIds) {
       const currentMusicIds = album.musics.map((music) => music.id);
