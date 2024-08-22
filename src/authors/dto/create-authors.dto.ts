@@ -14,7 +14,7 @@ export class CreateAuthorsDto {
   @IsDateString()
   releaseDate: Date;
 
-
+  @IsOptional()
   @IsNumber({}, { each: true })
   @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
   musicsIds: number[];
