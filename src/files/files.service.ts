@@ -37,7 +37,7 @@ console.log(params);
     } catch (error) {
       console.log(error);
       
-      throw new InternalServerErrorException('Failed to upload file');
+      throw new InternalServerErrorException('FRUSTRAAA SHENI FAILI ARVARGAA!!!!!!!!! CHEMI ERORIA ES 500 CHEMIII ME DAVWEREEEEEEEEE');
     }
   }
 }
