@@ -21,8 +21,8 @@ export class AlbumEntity {
   @Column({ type: 'varchar' })
   title: string;
 
-  @Column({ type: 'date' })
-  releaseDate: Date;
+  @Column({ type: 'varchar' })
+  releaseDate: string;
 
   @Column({ type: 'varchar' })
   artistName: string;

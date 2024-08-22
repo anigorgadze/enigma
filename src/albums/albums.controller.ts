@@ -66,11 +66,13 @@ export class AlbumsController {
   }
 
 
-  // @Roles(Role.Admin)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAlbumsDto: UpdateAlbumsDto) {
-    return this.albumsService.update(+id, updateAlbumsDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateAlbumsDto: UpdateAlbumsDto,
+    @UploadedFiles() files?: Files,
+  ) {
+    const { picture } = files || {};
+    return await this.albumsService.update(+id, updateAlbumsDto, picture ? picture[0] : undefined);
   }
 
 

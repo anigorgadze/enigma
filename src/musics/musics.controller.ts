@@ -31,7 +31,7 @@ export class MusicsController {
   constructor(private readonly musicsService: MusicsService) {}
 
 
-  @Roles(Role.Admin)
+  @Roles(Role.User)
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Post()
   @UseInterceptors(
@@ -74,11 +74,22 @@ export class MusicsController {
   }
 
 
-  @Roles(Role.Admin)
+  @Roles(Role.User)
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMusicsDto: UpdateMusicsDto) {
-    return this.musicsService.update(+id, updateMusicsDto);
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
+  update(
+    @Param('id') id: string,
+    @UploadedFiles() files: Files,
+    @Body() updateMusicsDto: UpdateMusicsDto,
+  ) {
+    const { picture, audio } = files;
+    return this.musicsService.update(+id, updateMusicsDto, picture ? picture[0] : null, audio ? audio[0] : null);
   }
 
 

@@ -50,4 +50,5 @@ export class MusicEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
+  musics: any;
 }

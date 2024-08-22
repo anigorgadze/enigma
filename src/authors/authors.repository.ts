@@ -13,7 +13,6 @@ export class AuthorsRepository {
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
-    private filesService: FilesService,
   ) { }
 
   async create(createAuthorsDto: CreateAuthorsDto,
@@ -23,6 +22,8 @@ export class AuthorsRepository {
     newAuthor.artistName = createAuthorsDto.artistName;
     newAuthor.releaseDate = createAuthorsDto.releaseDate
     newAuthor.coverImgUrl = picture;
+    newAuthor.lastName = createAuthorsDto.lastName;
+    newAuthor.biography = createAuthorsDto.biography
 
     try {
       await this.authorsRepository.save(newAuthor);
@@ -72,12 +73,13 @@ export class AuthorsRepository {
 
     author.artistName = updateAuthorsDto.artistName;
     author.releaseDate = updateAuthorsDto.releaseDate
+    author.lastName = updateAuthorsDto.lastName;
+    author.biography = updateAuthorsDto.biography
 
 
   if (coverImgUrl) {
     author.coverImgUrl = coverImgUrl;
   }
-
 
 
     if (updateAuthorsDto.musicsIds) {

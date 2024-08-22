@@ -11,8 +11,8 @@ export class CreateAlbumsDto {
   @IsString()
   title: string;
 
-  @IsDateString()
-  releaseDate: Date;
+  @IsString()
+  releaseDate: string;
 
   @IsString()
   artistName: string;

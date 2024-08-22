@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
 import { FilesService } from 'src/files/files.service';
+import { AuthorEntity } from 'src/authors/entities/author.entity';
+import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
+import { AlbumEntity } from 'src/albums/entities/album.entity';
 
 @Injectable()
 export class MusicsRepository {
@@ -77,19 +80,75 @@ export class MusicsRepository {
       .getOne();
   }
 
-  async update(id: number, updateMusicsDto: UpdateMusicsDto) {
-    await this.musicsRepository
-      .createQueryBuilder('music')
-      .update()
-      .set(updateMusicsDto)
-      .where('music.id = :id', { id })
-      .execute();
+  async update(
+    id: number,
+    updateMusicsDto: UpdateMusicsDto,
+    coverImgUrl?: string,
+    audioUrl?: string,
+  ) {
+    const music = await this.musicsRepository.findOne({
+      where: { id },
+      relations: ['authors', 'albums', 'playlist'],
+    });
+  
+    if (!music) {
+      throw new InternalServerErrorException('Music not found');
+    }
 
-    return await this.musicsRepository
-      .createQueryBuilder('music')
-      .where('music.id =:id', { id })
-      .getOne();
+    if (updateMusicsDto.title) {
+      music.title = updateMusicsDto.title;
+    }
+
+    if (coverImgUrl) {
+      music.coverImgUrl = coverImgUrl;
+    }
+  
+    if (audioUrl) {
+      music.audioUrl = audioUrl;
+    }
+  
+  
+    if (updateMusicsDto.authorsIds) {
+      const currentAuthorIds = music.authors.map((author) => author.id);
+      const newAuthorIds = updateMusicsDto.authorsIds.filter(
+        (id) => !currentAuthorIds.includes(id),
+      );
+      const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
+  
+      music.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
+    }
+  
+    if (updateMusicsDto.albumsIds) {
+      const currentAlbumIds = music.albums.map((album) => album.id);
+      const newAlbumIds = updateMusicsDto.albumsIds.filter(
+        (id) => !currentAlbumIds.includes(id),
+      );
+      const allAlbumIds = [...currentAlbumIds, ...newAlbumIds];
+  
+      music.albums = allAlbumIds.map((id) => ({ id }) as AlbumEntity);
+    }
+  
+    if (updateMusicsDto.playlistsIds) {
+      const currentPlaylistIds = music.playlist.map((playlist) => playlist.id);
+      const newPlaylistIds = updateMusicsDto.playlistsIds.filter(
+        (id) => !currentPlaylistIds.includes(id),
+      );
+      const allPlaylistIds = [...currentPlaylistIds, ...newPlaylistIds];
+  
+      music.playlist = allPlaylistIds.map((id) => ({ id }) as PlaylistEntity);
+    }
+  
+    try {
+      await this.musicsRepository.save(music);
+      return music;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Could not update music, try again later!',
+      );
+    }
   }
+  
+
 
   async remove(id: number) {
     await this.musicsRepository

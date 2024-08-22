@@ -31,8 +31,30 @@ async create(createMusicsDto: CreateMusicsDto,
     return this.musicsRepository.findOne(id);
   }
 
-  update(id: number, updateMusicsDto: UpdateMusicsDto) {
-    return this.musicsRepository.update(id, updateMusicsDto);
+  async update(
+    id: number,
+    updateMusicsDto: UpdateMusicsDto,
+    picture?: Express.Multer.File,
+    audio?: Express.Multer.File,
+  ) {
+    let coverImgUrl: string | undefined;
+    let audioUrl: string | undefined;
+  
+    if (picture) {
+      const uploadedPicture = await this.filesService.uploadFile(picture, 'Images');
+      coverImgUrl = uploadedPicture.Location;
+    }
+  
+    if (audio) {
+      const uploadedAudio = await this.filesService.uploadFile(audio, 'Musics');
+      audioUrl = uploadedAudio.Location;
+    }
+  
+    return this.musicsRepository.update(id, {
+      ...updateMusicsDto,
+      ...(coverImgUrl && { coverImgUrl }),
+      ...(audioUrl && { audioUrl }),
+    });
   }
 
   remove(id: number) {
