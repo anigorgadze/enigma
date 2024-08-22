@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCSESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCSESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
 
