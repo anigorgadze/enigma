@@ -37,7 +37,10 @@ export class AuthorsController {
     @UploadedFiles() files: Files,
     @Body() createAuthorsDto: CreateAuthorsDto,
   ) {
-
+    console.log('files' , files);
+    console.log('dto' , createAuthorsDto);
+    
+    
     const { picture } = files;
     if (!picture) {
       throw new InternalServerErrorException('Files are missing');

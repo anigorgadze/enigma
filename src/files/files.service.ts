@@ -29,11 +29,14 @@ export class FilesService {
       ContentType: file.mimetype,
     };
 
+console.log(params);
 
     try {
       const data = await this.s3.upload(params).promise();
       return data
     } catch (error) {
+      console.log(error);
+      
       throw new InternalServerErrorException('Failed to upload file');
     }
   }
