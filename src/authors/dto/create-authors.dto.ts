@@ -14,10 +14,6 @@ export class CreateAuthorsDto {
   @IsString()
   releaseDate: string;
 
-  @IsString()
-  @IsOptional()
-  coverImgUrl: string;
-
   @IsOptional()
   @IsNumber({}, { each: true })
   @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
