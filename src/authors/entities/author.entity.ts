@@ -23,7 +23,7 @@ export class AuthorEntity {
   @Column({ nullable: true })
   releaseDate: Date;
 
-  @Column({ nullable: true })
+  @Column({type: 'varchar'})
   coverImgUrl: string;
 
   @Column({ nullable: true })

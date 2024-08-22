@@ -24,23 +24,6 @@ export class AuthorsRepository {
     newAuthor.releaseDate = createAuthorsDto.releaseDate
     newAuthor.coverImgUrl = picture;
 
-    if (createAuthorsDto.musicsIds) {
-      newAuthor.musics = createAuthorsDto.musicsIds.map(
-        (id) =>
-          ({
-            id,
-          }) as MusicEntity,
-      );
-    }
-    if (createAuthorsDto.albumsIds) {
-      newAuthor.albums = createAuthorsDto.albumsIds.map(
-        (id) =>
-          ({
-            id,
-          }) as AlbumEntity,
-      );
-    }
-
     try {
       await this.authorsRepository.save(newAuthor);
       return newAuthor;
@@ -77,7 +60,7 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  async update(id: number, updateAuthorsDto: UpdateAuthorsDto) {
+  async update(id: number, updateAuthorsDto: UpdateAuthorsDto ,  coverImgUrl?: string) {
     const author = await this.authorsRepository.findOne({
       where: { id },
       relations: ['musics', 'albums'],
@@ -89,6 +72,11 @@ export class AuthorsRepository {
 
     author.artistName = updateAuthorsDto.artistName;
     author.releaseDate = new Date(updateAuthorsDto.releaseDate);
+
+
+  if (coverImgUrl) {
+    author.coverImgUrl = coverImgUrl;
+  }
 
 
 

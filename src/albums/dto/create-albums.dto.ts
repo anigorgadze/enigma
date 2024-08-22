@@ -14,9 +14,6 @@ export class CreateAlbumsDto {
   @IsDateString()
   releaseDate: Date;
 
-  // @IsString()
-  // imgUrl: string;
-
   @IsString()
   artistName: string;
 

@@ -37,8 +37,8 @@ export class AuthorsController {
     @UploadedFiles() files: Files,
     @Body() createAuthorsDto: CreateAuthorsDto,
   ) {
-    
-    const {picture} = files;
+
+    const { picture } = files;
     if (!picture) {
       throw new InternalServerErrorException('Files are missing');
     }
@@ -56,13 +56,23 @@ export class AuthorsController {
     return await this.authorsService.findOne(+id);
   }
 
+
+
   @Patch(':id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() updateAuthorDto: UpdateAuthorsDto,
+    @UploadedFiles() files?: Files,
   ) {
-    return await this.authorsService.update(+id, updateAuthorDto);
+    const { picture } = files || {};
+    return await this.authorsService.update(+id, updateAuthorDto, picture ? picture[0] : undefined);
   }
+
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
