@@ -21,7 +21,7 @@ export class AuthorEntity {
   artistName: string;
 
   @Column({ nullable: true })
-  releaseDate: Date;
+  releaseDate: number;
 
   @Column({type: 'varchar'})
   coverImgUrl: string;

@@ -71,7 +71,7 @@ export class AuthorsRepository {
     }
 
     author.artistName = updateAuthorsDto.artistName;
-    author.releaseDate = new Date(updateAuthorsDto.releaseDate);
+    author.releaseDate = updateAuthorsDto.releaseDate
 
 
   if (coverImgUrl) {

@@ -11,8 +11,8 @@ export class CreateAuthorsDto {
   @IsString()
   artistName: string;
 
-  @IsDateString()
-  releaseDate: Date;
+  @IsNumber()
+  releaseDate: number;
 
   @IsOptional()
   @IsNumber({}, { each: true })
