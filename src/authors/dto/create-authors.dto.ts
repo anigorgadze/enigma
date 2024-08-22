@@ -15,6 +15,7 @@ export class CreateAuthorsDto {
   releaseDate: string;
 
   @IsString()
+  @IsOptional()
   coverImgUrl: string;
 
   @IsOptional()
