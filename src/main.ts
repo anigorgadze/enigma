@@ -6,8 +6,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{cors:true});
-
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -15,12 +14,19 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type,Accept',
+  });
   const reflector = app.get(Reflector);
-  
-  app.useGlobalGuards(
+
+  app
+    .useGlobalGuards
     // new JwtAuthGuard(reflector),
     // new RolesGuard(reflector),
-  );
+    ();
 
   await app.listen(3000);
 }

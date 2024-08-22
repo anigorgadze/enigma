@@ -19,7 +19,8 @@ export class FilesService {
     if (!file || !file.buffer) {
       throw new InternalServerErrorException('File data is missing');
     }
-
+    console.log(file)
+  
 
     const fileName = `${uuidv4()}_${file.originalname}`;
     const params = {
@@ -29,15 +30,17 @@ export class FilesService {
       ContentType: file.mimetype,
     };
 
-console.log(params);
+    console.log(params);
 
     try {
       const data = await this.s3.upload(params).promise();
-      return data
+      return data;
     } catch (error) {
       console.log(error);
-      
-      throw new InternalServerErrorException('FRUSTRAAA SHENI FAILI ARVARGAA!!!!!!!!! CHEMI ERORIA ES 500 CHEMIII ME DAVWEREEEEEEEEE');
+
+      throw new InternalServerErrorException(
+        'FRUSTRAAA SHENI FAILI ARVARGAA!!!!!!!!! CHEMI ERORIA ES 500 CHEMIII ME DAVWEREEEEEEEEE',
+      );
     }
   }
 }
