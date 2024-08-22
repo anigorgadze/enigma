@@ -24,7 +24,7 @@ export class AuthorEntity {
   releaseDate: Date;
 
   @Column({ nullable: true })
-  imgUrl: string;
+  coverImgUrl: string;
 
   @Column({ nullable: true })
   userId: number;
