@@ -6,19 +6,23 @@ import { Repository } from 'typeorm';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class AuthorsRepository {
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
+    private filesService: FilesService,
   ) { }
 
   async create(createAuthorsDto: CreateAuthorsDto,
+    picture: string,
   ) {
     const newAuthor = new AuthorEntity();
     newAuthor.artistName = createAuthorsDto.artistName;
     newAuthor.releaseDate = createAuthorsDto.releaseDate
+    newAuthor.coverImgUrl = picture;
 
     if (createAuthorsDto.musicsIds) {
       newAuthor.musics = createAuthorsDto.musicsIds.map(
