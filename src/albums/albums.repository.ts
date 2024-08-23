@@ -1,22 +1,20 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AlbumEntity } from './entities/album.entity';
 import { Repository } from 'typeorm';
+import { AlbumEntity } from './entities/album.entity';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
+import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { AuthorEntity } from 'src/authors/entities/author.entity';
-
 
 @Injectable()
 export class AlbumsRepository {
   constructor(
     @InjectRepository(AlbumEntity)
-    private albumsRepository: Repository<AlbumEntity>
-  ) { }
+    private albumsRepository: Repository<AlbumEntity>,
+  ) {}
 
-  async create(createAlbumsDto: CreateAlbumsDto,
-    picture: string) {
+  async create(createAlbumsDto: CreateAlbumsDto, picture: string) {
     const newAlbum = new AlbumEntity();
     newAlbum.artistName = createAlbumsDto.artistName;
     newAlbum.coverImgUrl = picture;
@@ -27,11 +25,8 @@ export class AlbumsRepository {
       await this.albumsRepository.save(newAlbum);
       return newAlbum;
     } catch (exc) {
-      console.log(exc)
-      throw new InternalServerErrorException(
-        'Could not create album, try again later!',
-      );
-
+      console.log(exc);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -46,7 +41,7 @@ export class AlbumsRepository {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .leftJoinAndSelect('album.musics', 'albumMusics')
-      .where('album.id =:id', { id })
+      .where('album.id = :id', { id })
       .getOne();
   }
 
@@ -59,66 +54,74 @@ export class AlbumsRepository {
       .getMany();
   }
 
-  async update(id: number, updateAlbumsDto: UpdateAlbumsDto , coverImgUrl?: string) {
+  async update(
+    id: number,
+    updateAlbumsDto: UpdateAlbumsDto,
+    coverImgUrl?: string,
+    audioUrls?: string[],
+    musicPictureUrl?: string
+  ) {
     const album = await this.albumsRepository.findOne({
       where: { id },
       relations: ['musics', 'authors'],
     });
-
+  
     if (!album) {
-      throw new InternalServerErrorException('Author not found');
+      throw new InternalServerErrorException();
     }
-
+  
     album.title = updateAlbumsDto.title;
-    album.releaseDate = updateAlbumsDto.releaseDate
-    album.coverImgUrl = updateAlbumsDto.coverImgUrl
-
-    if (coverImgUrl) {
-      album.coverImgUrl = coverImgUrl;
+    album.releaseDate = updateAlbumsDto.releaseDate;
+    album.coverImgUrl = coverImgUrl || album.coverImgUrl;
+  
+    if (audioUrls) {
+      const newMusics = audioUrls.map(url => {
+        const music = new MusicEntity();
+        music.title = updateAlbumsDto.musicTitle || 'Untitled'; 
+        music.audioUrl = url;
+        music.coverImgUrl = musicPictureUrl; 
+        return music;
+      });
+      album.musics = [...album.musics, ...newMusics];
     }
-   
+  
     if (updateAlbumsDto.musicsIds) {
-      const currentMusicIds = album.musics.map((music) => music.id);
+      const currentMusicIds = album.musics.map(music => music.id);
       const newMusicIds = updateAlbumsDto.musicsIds.filter(
-        (id) => !currentMusicIds.includes(id),
+        id => !currentMusicIds.includes(id),
       );
       const allMusicIds = [...currentMusicIds, ...newMusicIds];
-
-      album.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
+      album.musics = allMusicIds.map(id => ({ id }) as MusicEntity);
     }
-
+  
     if (updateAlbumsDto.authorsIds) {
-      const currentAuthorIds = album.authors.map((author) => author.id);
+      const currentAuthorIds = album.authors.map(author => author.id);
       const newAuthorIds = updateAlbumsDto.authorsIds.filter(
-        (id) => !currentAuthorIds.includes(id),
+        id => !currentAuthorIds.includes(id),
       );
       const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
-
-      album.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
+      album.authors = allAuthorIds.map(id => ({ id }) as AuthorEntity);
     }
-
-
+  
     try {
       await this.albumsRepository.save(album);
       return album;
     } catch (err) {
-      throw new InternalServerErrorException(
-        'Could not update author, try again later!',
-      );
+      throw new InternalServerErrorException();
     }
   }
 
   async remove(id: number) {
     await this.albumsRepository
       .createQueryBuilder('album')
-      .where('album.id =:id', { id })
+      .where('album.id = :id', { id })
       .softDelete()
       .execute();
 
     return await this.albumsRepository
       .createQueryBuilder('album')
       .withDeleted()
-      .where('album.id =:id', { id })
+      .where('album.id = :id', { id })
       .getOne();
   }
 }

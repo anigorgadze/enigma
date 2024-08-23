@@ -16,21 +16,20 @@ import { AlbumsService } from './albums.service';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/auth/role.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Public } from 'src/auth/public.decorator';
 
 interface Files {
   picture?: Express.Multer.File[];
+  audio?: Express.Multer.File[];
+  musicPicture?: Express.Multer.File[];
 }
 
 @Controller('albums')
 @Public()
 export class AlbumsController {
-  constructor(private readonly albumsService: AlbumsService) { }
-
+  constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
   @UseInterceptors(
@@ -41,14 +40,14 @@ export class AlbumsController {
   create(
     @UploadedFiles() files: Files,
     @Body() createAlbumsDto: CreateAlbumsDto,
-    @Request()  req
+    @Request() req
   ) {
     const { picture } = files;
 
     if (!picture) {
       throw new InternalServerErrorException('Files are missing');
     }
-    return this.albumsService.create(createAlbumsDto, picture[0] );
+    return this.albumsService.create(createAlbumsDto, picture[0]);
   }
 
   @Get()
@@ -56,31 +55,39 @@ export class AlbumsController {
     return this.albumsService.findAll();
   }
 
-
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.albumsService.findOne(+id);
   }
 
-
+  @Patch(':id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'musicPicture', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() updateAlbumsDto: UpdateAlbumsDto,
     @UploadedFiles() files?: Files,
   ) {
-    const { picture } = files || {};
-    return await this.albumsService.update(+id, updateAlbumsDto, picture ? picture[0] : undefined);
+    const { picture, audio, musicPicture } = files;
+
+    return await this.albumsService.update(
+      +id,
+      updateAlbumsDto,
+      picture ? picture[0] : null,
+      audio,
+      musicPicture ? musicPicture[0] : null
+    );
   }
 
-
- 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.albumsService.remove(+id);
   }
 }
-
-

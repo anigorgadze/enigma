@@ -18,6 +18,10 @@ export class CreateAlbumsDto {
   @IsString()
   artistName: string;
 
+  @IsString()
+  @IsOptional()
+  musicTitle:string
+
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
