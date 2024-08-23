@@ -3,6 +3,7 @@ import {
   IsArray,
   IsDateString,
   IsNumber,
+  IsOptional,
   IsString,
   IsUrl,
 } from 'class-validator';
@@ -18,14 +19,17 @@ export class CreateAlbumsDto {
   artistName: string;
 
   @IsArray()
+  @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   musicsIds: number[];
 
   @IsArray()
+  @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   authorsIds: number[];
 
   @IsString()
-  coverImgUrl:string
+  @IsOptional()
+  coverImgUrl: string
 }
 
