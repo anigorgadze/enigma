@@ -27,12 +27,11 @@ interface Files {
 }
 
 @Controller('albums')
+@Public()
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) { }
 
 
-  @Roles(Role.User)
-  @Public()
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -76,7 +75,7 @@ export class AlbumsController {
   }
 
 
-  @Roles(Role.Admin)
+ 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
