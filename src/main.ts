@@ -27,7 +27,7 @@ async function bootstrap() {
     // new JwtAuthGuard(reflector),
     // new RolesGuard(reflector),
     ();
-    const port = process.env.PORT || 3000; 
+    const port = process.env.PORT || 8080; 
     await app.listen(port);
 }
 bootstrap();
