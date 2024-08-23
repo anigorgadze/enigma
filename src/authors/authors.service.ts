@@ -28,7 +28,9 @@ async create(createAuthorsDto: CreateAuthorsDto,
   }
 
  
-  async update(id: number, updateAuthorsDto: UpdateAuthorsDto, picture?: Express.Multer.File) {
+  async update(id: number, 
+    updateAuthorsDto: UpdateAuthorsDto, 
+    picture?: Express.Multer.File) {
     let coverImgUrl: string | undefined;
     
     if (picture) {

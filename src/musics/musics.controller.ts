@@ -89,7 +89,8 @@ export class MusicsController {
     @Body() updateMusicsDto: UpdateMusicsDto,
   ) {
     const { picture, audio } = files;
-    return this.musicsService.update(+id, updateMusicsDto, picture ? picture[0] : null, audio ? audio[0] : null);
+    return this.musicsService.update(+id, updateMusicsDto,
+       picture ? picture[0] : null, audio ? audio[0] : null);
   }
 
 

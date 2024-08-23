@@ -30,7 +30,7 @@ export class AuthorsRepository {
       return newAuthor;
     } catch (err) {
       throw new InternalServerErrorException(
-        'Could not create album, try again later!',
+        'Could not create author , try again later!',
       );
     }
   }
