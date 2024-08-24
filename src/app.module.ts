@@ -31,11 +31,7 @@ import { ListenRecordsModule } from './listens/listens.module';
       database: process.env.MYSQL_NAME || 'enigma',
       autoLoadEntities: true,
       synchronize: true,
-      keepConnectionAlive: true,
-      extra: {
-        connectionLimit: 10,
-        queueLimit: 0, 
-      },
+    
     }),
     SearchModule,
     PlaylistsModule,
