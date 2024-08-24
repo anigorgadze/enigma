@@ -28,11 +28,11 @@ async function bootstrap() {
     // new JwtAuthGuard(reflector),
     // new RolesGuard(reflector),
     ();
-    const port = process.env.PORT || 8080; 
-    await app.listen(port);
+  const port = process.env.PORT || 8080;
+  await app.listen(port);
 
-      setInterval(() => {
-        https.get('https://enigma-wtuc.onrender.com');
-      }, 60000);
+  setInterval(() => {
+    https.get('https://enigma-wtuc.onrender.com');
+  }, 840000);
 }
 bootstrap();
