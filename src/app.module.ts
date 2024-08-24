@@ -32,6 +32,10 @@ import { ListenRecordsModule } from './listens/listens.module';
       autoLoadEntities: true,
       synchronize: true,
       keepConnectionAlive: true,
+      extra: {
+        connectionLimit: 10,
+        queueLimit: 0, 
+      },
     }),
     SearchModule,
     PlaylistsModule,

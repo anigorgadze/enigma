@@ -1,6 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as https from 'https';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -29,5 +30,9 @@ async function bootstrap() {
     ();
     const port = process.env.PORT || 8080; 
     await app.listen(port);
+
+      setInterval(() => {
+        https.get('https://www.flareit.ge/');
+      }, 300000);
 }
 bootstrap();
