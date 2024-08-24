@@ -33,6 +33,6 @@ async function bootstrap() {
 
       setInterval(() => {
         https.get('https://www.flareit.ge/');
-      }, 300000);
+      }, 10000);
 }
 bootstrap();
