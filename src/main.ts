@@ -32,7 +32,7 @@ async function bootstrap() {
     await app.listen(port);
 
       setInterval(() => {
-        https.get('https://www.flareit.ge/');
-      }, 10000);
+        https.get('https://enigma-wtuc.onrender.com');
+      }, 60000);
 }
 bootstrap();
