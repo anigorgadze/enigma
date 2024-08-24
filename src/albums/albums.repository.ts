@@ -34,6 +34,7 @@ export class AlbumsRepository {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .leftJoinAndSelect('album.musics', 'albumMusics')
+      .leftJoinAndSelect('album.authors', 'albumAuthors')
       .getMany();
   }
 
@@ -41,6 +42,7 @@ export class AlbumsRepository {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .leftJoinAndSelect('album.musics', 'albumMusics')
+      .leftJoinAndSelect('album.authors', 'albumAuthors')
       .where('album.id = :id', { id })
       .getOne();
   }
@@ -59,54 +61,55 @@ export class AlbumsRepository {
     updateAlbumsDto: UpdateAlbumsDto,
     coverImgUrl?: string,
     audioUrls?: string[],
-    musicPictureUrl?: string
+    musicPictureUrl?: string,
   ) {
     const album = await this.albumsRepository.findOne({
       where: { id },
       relations: ['musics', 'authors'],
     });
-  
+
     if (!album) {
-      throw new InternalServerErrorException();
+      throw new InternalServerErrorException('Album not found');
     }
-  
+
     album.title = updateAlbumsDto.title;
     album.releaseDate = updateAlbumsDto.releaseDate;
     album.coverImgUrl = coverImgUrl || album.coverImgUrl;
-  
+
     if (audioUrls) {
-      const newMusics = audioUrls.map(url => {
+      const newMusics = audioUrls.map((url) => {
         const music = new MusicEntity();
-        music.title = updateAlbumsDto.musicTitle || 'Untitled'; 
+        music.title = updateAlbumsDto.musicTitle || 'Untitled';
         music.audioUrl = url;
-        music.coverImgUrl = musicPictureUrl; 
+        music.coverImgUrl = musicPictureUrl;
         return music;
       });
       album.musics = [...album.musics, ...newMusics];
     }
-  
+
     if (updateAlbumsDto.musicsIds) {
-      const currentMusicIds = album.musics.map(music => music.id);
+      const currentMusicIds = album.musics.map((music) => music.id);
       const newMusicIds = updateAlbumsDto.musicsIds.filter(
-        id => !currentMusicIds.includes(id),
+        (id) => !currentMusicIds.includes(id),
       );
       const allMusicIds = [...currentMusicIds, ...newMusicIds];
-      album.musics = allMusicIds.map(id => ({ id }) as MusicEntity);
+      album.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
     }
-  
+
     if (updateAlbumsDto.authorsIds) {
-      const currentAuthorIds = album.authors.map(author => author.id);
+      const currentAuthorIds = album.authors.map((author) => author.id);
       const newAuthorIds = updateAlbumsDto.authorsIds.filter(
-        id => !currentAuthorIds.includes(id),
+        (id) => !currentAuthorIds.includes(id),
       );
       const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
-      album.authors = allAuthorIds.map(id => ({ id }) as AuthorEntity);
+      album.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
     }
-  
+
     try {
       await this.albumsRepository.save(album);
       return album;
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException();
     }
   }

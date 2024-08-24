@@ -27,12 +27,13 @@ interface Files {
 }
 
 @Controller('musics')
+@Public()
 export class MusicsController {
   constructor(private readonly musicsService: MusicsService) {}
 
 
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard,RolesGuard)
+  
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([

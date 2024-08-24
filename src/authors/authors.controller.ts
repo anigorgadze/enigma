@@ -16,7 +16,6 @@ import { UpdateAuthorsDto } from './dto/update-authors.dto';
 import { Public } from 'src/auth/public.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
-
 interface Files {
   picture?: Express.Multer.File[];
 }
@@ -24,30 +23,20 @@ interface Files {
 @Controller('authors')
 @Public()
 export class AuthorsController {
-  constructor(private readonly authorsService: AuthorsService) { }
+  constructor(private readonly authorsService: AuthorsService) {}
 
   @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'picture', maxCount: 1 },
-    ]),
-  )
-
-  create(
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  async create(
     @UploadedFiles() files: Files,
     @Body() createAuthorsDto: CreateAuthorsDto,
   ) {
-    console.log('files' , files);
-    console.log('dto' , createAuthorsDto);
-    
-    
     const { picture } = files;
     if (!picture) {
       throw new InternalServerErrorException('Files are missing');
     }
-    return this.authorsService.create(createAuthorsDto, picture[0]);
+    return await this.authorsService.create(createAuthorsDto, picture[0]);
   }
-
 
   @Get()
   async findAll() {
@@ -59,23 +48,20 @@ export class AuthorsController {
     return await this.authorsService.findOne(+id);
   }
 
-
-
   @Patch(':id')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'picture', maxCount: 1 },
-    ]),
-  )
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
   async update(
     @Param('id') id: string,
     @Body() updateAuthorDto: UpdateAuthorsDto,
     @UploadedFiles() files?: Files,
   ) {
     const { picture } = files || {};
-    return await this.authorsService.update(+id, updateAuthorDto, picture ? picture[0] : undefined);
+    return await this.authorsService.update(
+      +id,
+      updateAuthorDto,
+      picture ? picture[0] : undefined,
+    );
   }
-
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
