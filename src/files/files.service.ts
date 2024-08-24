@@ -1,29 +1,28 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import * as dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
-
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
-});
-
-
-
 @Injectable()
 export class FilesService {
-  private readonly s3 = new AWS.S3();
+  private readonly s3Client: S3Client;
+
+  constructor() {
+    this.s3Client = new S3Client({
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
+  }
 
   async uploadFile(file: Express.Multer.File, directory = '') {
     if (!file || !file.buffer) {
       throw new InternalServerErrorException('File data is missing');
     }
-    console.log(file)
-  
 
     const fileName = `${uuidv4()}_${file.originalname}`;
     const params = {
@@ -33,16 +32,18 @@ export class FilesService {
       ContentType: file.mimetype,
     };
 
-    console.log(params);
-
     try {
-      const data = await this.s3.upload(params).promise();
-      return data;
+      const command = new PutObjectCommand(params);
+      await this.s3Client.send(command);
+
+     
+      const url = `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
+
+      return { url }; 
     } catch (error) {
       console.log(error);
-
       throw new InternalServerErrorException(
-        'FRUSTRAAA SHENI FAILI ARVARGAA!!!!!!!!! CHEMI ERORIA ES 500 CHEMIII ME DAVWEREEEEEEEEE',
+        'Could not upload file, try again later!',
       );
     }
   }

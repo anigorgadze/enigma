@@ -13,8 +13,11 @@ export class AlbumsService {
   ) {}
 
   async create(createAlbumsDto: CreateAlbumsDto, picture: Express.Multer.File) {
-    const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');
-    return this.albumsRepository.create(createAlbumsDto, coverImgUrl.Location);
+    const { url: coverImgUrl } = await this.filesService.uploadFile(
+      picture,
+      'Images',
+    );
+    return this.albumsRepository.create(createAlbumsDto, coverImgUrl);
   }
 
   findAll() {
@@ -30,28 +33,43 @@ export class AlbumsService {
     updateAlbumsDto: UpdateAlbumsDto,
     picture?: Express.Multer.File,
     audio?: Express.Multer.File[],
-    musicPicture?: Express.Multer.File
+    musicPicture?: Express.Multer.File,
   ) {
     let coverImgUrl: string | undefined;
     let audioUrls: string[] = [];
     let musicPictureUrl: string | undefined;
 
     if (picture) {
-      coverImgUrl = (await this.filesService.uploadFile(picture, 'Images')).Location;
+      ({ url: coverImgUrl } = await this.filesService.uploadFile(
+        picture,
+        'Images',
+      ));
     }
 
     if (audio && audio.length > 0) {
       for (const audioFile of audio) {
-        const audioUrl = (await this.filesService.uploadFile(audioFile, 'Musics')).Location;
+        const { url: audioUrl } = await this.filesService.uploadFile(
+          audioFile,
+          'Musics',
+        );
         audioUrls.push(audioUrl);
       }
     }
 
     if (musicPicture) {
-      musicPictureUrl = (await this.filesService.uploadFile(musicPicture, 'MusicPictures')).Location;
+      ({ url: musicPictureUrl } = await this.filesService.uploadFile(
+        musicPicture,
+        'MusicPictures',
+      ));
     }
 
-    return await this.albumsRepository.update(id, updateAlbumsDto, coverImgUrl, audioUrls, musicPictureUrl);
+    return await this.albumsRepository.update(
+      id,
+      updateAlbumsDto,
+      coverImgUrl,
+      audioUrls,
+      musicPictureUrl,
+    );
   }
 
   remove(id: number) {

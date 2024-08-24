@@ -4,27 +4,36 @@ import { CreateMusicsDto } from './dto/create-musics.dto';
 import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { FilesService } from 'src/files/files.service';
 
-
 @Injectable()
 export class MusicsService {
-  constructor(private readonly musicsRepository: MusicsRepository, 
-          private readonly filesService: FilesService) {}
+  constructor(
+    private readonly musicsRepository: MusicsRepository,
+    private readonly filesService: FilesService,
+  ) {}
 
-async create(createMusicsDto: CreateMusicsDto, 
-  picture: Express.Multer.File,
-  audio: Express.Multer.File) 
-{
-  const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');   
-  const audioUrl = await this.filesService.uploadFile(audio, 'Musics'); 
-  return this.musicsRepository.create(createMusicsDto, coverImgUrl.Location, audioUrl.Location)
-}
+  async create(
+    createMusicsDto: CreateMusicsDto,
+    picture: Express.Multer.File,
+    audio: Express.Multer.File,
+  ) {
+    const coverImgResult = await this.filesService.uploadFile(
+      picture,
+      'Images',
+    );
+    const audioResult = await this.filesService.uploadFile(audio, 'Musics');
+
+    const coverImgUrl = coverImgResult.url;
+    const audioUrl = audioResult.url;
+
+    return this.musicsRepository.create(createMusicsDto, coverImgUrl, audioUrl);
+  }
 
   findAll() {
     return this.musicsRepository.findAll();
   }
 
-  topHits(){
-    return this.musicsRepository.topHits()
+  topHits() {
+    return this.musicsRepository.topHits();
   }
 
   findOne(id: number) {
@@ -39,17 +48,20 @@ async create(createMusicsDto: CreateMusicsDto,
   ) {
     let coverImgUrl: string | undefined;
     let audioUrl: string | undefined;
-  
+
     if (picture) {
-      const uploadedPicture = await this.filesService.uploadFile(picture, 'Images');
-      coverImgUrl = uploadedPicture.Location;
+      const uploadedPicture = await this.filesService.uploadFile(
+        picture,
+        'Images',
+      );
+      coverImgUrl = uploadedPicture.url;
     }
-  
+
     if (audio) {
       const uploadedAudio = await this.filesService.uploadFile(audio, 'Musics');
-      audioUrl = uploadedAudio.Location;
+      audioUrl = uploadedAudio.url;
     }
-  
+
     return this.musicsRepository.update(id, {
       ...updateMusicsDto,
       ...(coverImgUrl && { coverImgUrl }),

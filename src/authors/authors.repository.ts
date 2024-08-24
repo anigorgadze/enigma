@@ -1,36 +1,33 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthorEntity } from './entities/author.entity';
 import { Repository } from 'typeorm';
+import { AuthorEntity } from './entities/author.entity';
+import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { UpdateAuthorsDto } from './dto/update-authors.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
-import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class AuthorsRepository {
   constructor(
     @InjectRepository(AuthorEntity)
     private readonly authorsRepository: Repository<AuthorEntity>,
-  ) { }
+  ) {}
 
-  async create(createAuthorsDto: CreateAuthorsDto,
-    picture: string,
-  ) {
+  async create(createAuthorsDto: CreateAuthorsDto, coverImgUrl: string) {
     const newAuthor = new AuthorEntity();
     newAuthor.artistName = createAuthorsDto.artistName;
-    newAuthor.releaseDate = createAuthorsDto.releaseDate
-    newAuthor.coverImgUrl = picture;
+    newAuthor.releaseDate = createAuthorsDto.releaseDate;
+    newAuthor.coverImgUrl = coverImgUrl;
     newAuthor.lastName = createAuthorsDto.lastName;
-    newAuthor.biography = createAuthorsDto.biography
+    newAuthor.biography = createAuthorsDto.biography;
 
     try {
       await this.authorsRepository.save(newAuthor);
       return newAuthor;
     } catch (err) {
       throw new InternalServerErrorException(
-        'Could not create author , try again later!',
+        'Could not create author, try again later!',
       );
     }
   }
@@ -61,7 +58,11 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  async update(id: number, updateAuthorsDto: UpdateAuthorsDto ,  coverImgUrl?: string) {
+  async update(
+    id: number,
+    updateAuthorsDto: UpdateAuthorsDto,
+    coverImgUrl?: string,
+  ) {
     const author = await this.authorsRepository.findOne({
       where: { id },
       relations: ['musics', 'albums'],
@@ -72,28 +73,26 @@ export class AuthorsRepository {
     }
 
     author.artistName = updateAuthorsDto.artistName;
-    author.releaseDate = updateAuthorsDto.releaseDate
+    author.releaseDate = updateAuthorsDto.releaseDate;
     author.lastName = updateAuthorsDto.lastName;
-    author.biography = updateAuthorsDto.biography
+    author.biography = updateAuthorsDto.biography;
 
-
-  if (coverImgUrl) {
-    author.coverImgUrl = coverImgUrl;
-  }
-
+    if (coverImgUrl) {
+      author.coverImgUrl = coverImgUrl;
+    }
 
     if (updateAuthorsDto.musicsIds) {
-      const currenMusicIds = author.musics.map((author) => author.id);
+      const currentMusicIds = author.musics.map((music) => music.id);
       const newMusicIds = updateAuthorsDto.musicsIds.filter(
-        (id) => !currenMusicIds.includes(id),
+        (id) => !currentMusicIds.includes(id),
       );
-      const allMusicIds = [...currenMusicIds, ...newMusicIds];
+      const allMusicIds = [...currentMusicIds, ...newMusicIds];
 
       author.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
     }
 
     if (updateAuthorsDto.albumsIds) {
-      const currentAlbumIds = author.albums.map((author) => author.id);
+      const currentAlbumIds = author.albums.map((album) => album.id);
       const newAlbumIds = updateAuthorsDto.albumsIds.filter(
         (id) => !currentAlbumIds.includes(id),
       );
@@ -101,8 +100,6 @@ export class AuthorsRepository {
 
       author.albums = allAlbumIds.map((id) => ({ id }) as AlbumEntity);
     }
-
-
 
     try {
       await this.authorsRepository.save(author);

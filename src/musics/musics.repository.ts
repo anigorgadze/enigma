@@ -4,7 +4,6 @@ import { UpdateMusicsDto } from './dto/update-musics.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicEntity } from './entities/music.entity';
 import { Repository } from 'typeorm';
-import { FilesService } from 'src/files/files.service';
 import { AuthorEntity } from 'src/authors/entities/author.entity';
 import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
@@ -14,17 +13,19 @@ export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
     private musicsRepository: Repository<MusicEntity>,
-    private filesService: FilesService,
   ) {}
+
   async create(
     createMusicsDto: CreateMusicsDto,
-    picture: string,
-    audio: string,
+    coverImgUrl: string,
+    audioUrl: string,
   ) {
-    const newMusic = new MusicEntity();
-    newMusic.title = createMusicsDto.title;
-    newMusic.coverImgUrl = picture;
-    newMusic.audioUrl = audio;
+    const newMusic = this.musicsRepository.create({
+      ...createMusicsDto,
+      coverImgUrl,
+      audioUrl,
+    });
+
     try {
       return await this.musicsRepository.save(newMusic);
     } catch (exc) {
@@ -76,7 +77,7 @@ export class MusicsRepository {
       .createQueryBuilder('music')
       .leftJoinAndSelect('music.authors', 'author')
       .leftJoinAndSelect('music.albums', 'album')
-      .where('music.id =:id', { id })
+      .where('music.id = :id', { id })
       .getOne();
   }
 
@@ -90,7 +91,7 @@ export class MusicsRepository {
       where: { id },
       relations: ['authors', 'albums', 'playlist'],
     });
-  
+
     if (!music) {
       throw new InternalServerErrorException('Music not found');
     }
@@ -102,42 +103,41 @@ export class MusicsRepository {
     if (coverImgUrl) {
       music.coverImgUrl = coverImgUrl;
     }
-  
+
     if (audioUrl) {
       music.audioUrl = audioUrl;
     }
-  
-  
+
     if (updateMusicsDto.authorsIds) {
       const currentAuthorIds = music.authors.map((author) => author.id);
       const newAuthorIds = updateMusicsDto.authorsIds.filter(
         (id) => !currentAuthorIds.includes(id),
       );
       const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
-  
+
       music.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
     }
-  
+
     if (updateMusicsDto.albumsIds) {
       const currentAlbumIds = music.albums.map((album) => album.id);
       const newAlbumIds = updateMusicsDto.albumsIds.filter(
         (id) => !currentAlbumIds.includes(id),
       );
       const allAlbumIds = [...currentAlbumIds, ...newAlbumIds];
-  
+
       music.albums = allAlbumIds.map((id) => ({ id }) as AlbumEntity);
     }
-  
+
     if (updateMusicsDto.playlistsIds) {
       const currentPlaylistIds = music.playlist.map((playlist) => playlist.id);
       const newPlaylistIds = updateMusicsDto.playlistsIds.filter(
         (id) => !currentPlaylistIds.includes(id),
       );
       const allPlaylistIds = [...currentPlaylistIds, ...newPlaylistIds];
-  
+
       music.playlist = allPlaylistIds.map((id) => ({ id }) as PlaylistEntity);
     }
-  
+
     try {
       await this.musicsRepository.save(music);
       return music;
@@ -147,20 +147,18 @@ export class MusicsRepository {
       );
     }
   }
-  
-
 
   async remove(id: number) {
     await this.musicsRepository
       .createQueryBuilder('music')
-      .where('music.id =:id', { id })
+      .where('music.id = :id', { id })
       .softDelete()
       .execute();
 
     return await this.musicsRepository
       .createQueryBuilder('music')
       .withDeleted()
-      .where('music.id =:id', { id })
+      .where('music.id = :id', { id })
       .getOne();
   }
 }
