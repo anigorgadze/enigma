@@ -10,7 +10,8 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-  Request
+  Request,
+  Query
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
@@ -19,6 +20,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Public } from 'src/auth/public.decorator';
+import { MusicEntity } from 'src/musics/entities/music.entity';
 
 interface Files {
   picture?: Express.Multer.File[];
@@ -55,6 +57,12 @@ export class AlbumsController {
     return this.albumsService.findAll();
   }
 
+  @Get('top-albums')
+  async getTopAlbums() {
+    return this.albumsService.updateAndGetTopAlbums();
+  }
+
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -90,4 +98,6 @@ export class AlbumsController {
   remove(@Param('id') id: string) {
     return this.albumsService.remove(+id);
   }
+
+
 }

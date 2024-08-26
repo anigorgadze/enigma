@@ -27,6 +27,9 @@ export class AlbumEntity {
   @Column({ type: 'varchar' })
   artistName: string;
 
+  @Column({ type: 'int', default: 0 })
+  totalPlayCount: number;
+
   @Column({ type: 'varchar' })
   coverImgUrl: string;
 

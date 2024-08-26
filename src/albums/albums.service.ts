@@ -75,4 +75,15 @@ export class AlbumsService {
   remove(id: number) {
     return this.albumsRepository.remove(id);
   }
+
+  async updateAndGetTopAlbums(){
+   
+    await this.albumsRepository.updateAllAlbumsPlayCounts();
+
+    return this.albumsRepository.topAlbums();
+  }
+
+  
+
+  
 }
