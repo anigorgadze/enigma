@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, createQueryBuilder } from 'typeorm';
 import { AlbumEntity } from './entities/album.entity';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
@@ -114,6 +114,31 @@ export class AlbumsRepository {
     }
   }
 
+
+
+  async updateAllAlbumsPlayCounts(): Promise<void> {
+    const albums = await this.albumsRepository.find({
+      relations: ['musics'],
+    });
+
+    for (const album of albums) {
+      const totalPlayCount = album.musics.reduce((sum, music) => sum + music.playCount, 0);
+      const numberOfMusics = album.musics.length;
+
+
+      album.totalPlayCount = numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
+      
+      await this.albumsRepository.save(album);
+    }
+  }
+  async topAlbums(): Promise<AlbumEntity[]> {
+    return await this.albumsRepository
+      .createQueryBuilder('album')
+      .orderBy('album.totalPlayCount', 'DESC')
+      .take(4)
+      .getMany();
+  }
+
   async remove(id: number) {
     await this.albumsRepository
       .createQueryBuilder('album')
@@ -127,4 +152,6 @@ export class AlbumsRepository {
       .where('album.id = :id', { id })
       .getOne();
   }
+
+  
 }
