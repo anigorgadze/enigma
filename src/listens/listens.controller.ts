@@ -13,8 +13,10 @@ import { CreateListenRecordDto } from './dto/create-listenRecord.dto';
 import { ListenRecordsService } from './listens.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('listen-records')
+@Public()
 @UseGuards(AuthGuard)
 export class ListenRecordsController {
   constructor(private readonly listenRecordsService: ListenRecordsService) {}
