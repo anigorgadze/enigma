@@ -149,16 +149,22 @@ export class MusicsRepository {
   }
 
   async remove(id: number) {
-    await this.musicsRepository
-      .createQueryBuilder('music')
-      .where('music.id = :id', { id })
-      .softDelete()
-      .execute();
+    const music = await this.musicsRepository.findOneBy({ id });
 
-    return await this.musicsRepository
-      .createQueryBuilder('music')
-      .withDeleted()
-      .where('music.id = :id', { id })
-      .getOne();
+    if (music.id === 11) {
+      throw new InternalServerErrorException('Frustra amas ver washliiiiiiiiiiiiiiiiiiiii');
+    } else {
+      await this.musicsRepository
+        .createQueryBuilder('music')
+        .where('music.id = :id', { id })
+        .softDelete()
+        .execute();
+
+      return await this.musicsRepository
+        .createQueryBuilder('music')
+        .withDeleted()
+        .where('music.id = :id', { id })
+        .getOne();
+    }
   }
 }
