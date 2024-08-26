@@ -95,8 +95,7 @@ export class MusicsController {
   }
 
 
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard,RolesGuard)
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.musicsService.remove(+id);

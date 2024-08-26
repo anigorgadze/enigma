@@ -4,7 +4,6 @@ import { IsNumber, IsOptional, IsString} from 'class-validator';
 export class CreateMusicsDto {
   @IsString()
   title: string;
-  
 
   @IsNumber({}, { each: true })
   @IsOptional()
@@ -21,3 +20,4 @@ export class CreateMusicsDto {
   @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
   playlistsIds: number[];
 }
+
