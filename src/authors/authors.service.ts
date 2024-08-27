@@ -48,4 +48,9 @@ export class AuthorsService {
   async remove(id: number) {
     return await this.authorsRepository.remove(id);
   }
+
+  async updateAndGetTopAuthors() {
+    await this.authorsRepository.updateAllAuthorsPlayCounts();
+    return this.authorsRepository.topAuthors();
+  }
 }

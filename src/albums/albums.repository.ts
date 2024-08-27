@@ -115,22 +115,28 @@ export class AlbumsRepository {
   }
 
 
-
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({
       relations: ['musics'],
     });
 
-    for (const album of albums) {
+    const updatePromises = albums.map(async (album) => {
       const totalPlayCount = album.musics.reduce((sum, music) => sum + music.playCount, 0);
       const numberOfMusics = album.musics.length;
 
-
       album.totalPlayCount = numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
-      
-      await this.albumsRepository.save(album);
+
+      return this.albumsRepository.save(album);
+    });
+
+    try {
+      await Promise.all(updatePromises);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException('Failed to update play counts, please try again later!');
     }
   }
+
   async topAlbums(): Promise<AlbumEntity[]> {
     return await this.albumsRepository
       .createQueryBuilder('album')
