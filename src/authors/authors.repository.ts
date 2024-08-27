@@ -33,11 +33,21 @@ export class AuthorsRepository {
   }
 
   async findAll() {
-    return await this.authorsRepository
-      .createQueryBuilder('author')
-      .leftJoinAndSelect('author.musics', 'authorMusics')
-      .leftJoinAndSelect('author.albums', 'authorAlbums')
-      .getMany();
+    const authors =  await this.authorsRepository.find( {
+      relations: ['musics']
+    })
+
+    for(const author of authors){
+      const musicsLength = author.musics.length
+      author.musicsCount = musicsLength
+
+       await this.authorsRepository.save(author)
+
+       return authors
+    }
+
+    
+     
   }
 
   async findOne(id: number) {
