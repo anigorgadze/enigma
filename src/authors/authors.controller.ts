@@ -73,4 +73,9 @@ export class AuthorsController {
   async remove(@Param('id') id: string) {
     return await this.authorsService.remove(+id);
   }
+
+  @Get(':id/songs-count')
+  async countSongs(@Param('id') id: string) {
+    return await this.authorsService.countSongs(+id);
+  }
 }

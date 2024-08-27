@@ -150,4 +150,17 @@ export class AuthorsRepository {
       .where('author.id = :id', { id })
       .getOne();
   }
+  async countSongs(id: number): Promise<number> {
+    const author = await this.authorsRepository
+      .createQueryBuilder('author')
+      .leftJoinAndSelect('author.musics', 'authorMusics')
+      .where('author.id = :id', { id })
+      .getOne();
+
+    if (!author) {
+      throw new InternalServerErrorException('Author not found');
+    }
+
+    return author.musics.length;
+  }
 }
