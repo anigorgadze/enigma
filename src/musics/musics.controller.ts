@@ -61,7 +61,10 @@ export class MusicsController {
     return this.musicsService.findAll();
   }
 
-
+  @Get('shuffle')
+  async shuffleMusics() {
+    return this.musicsService.shuffleMusics();
+  }
 
   @Public()
   @Get('tophits')
@@ -94,8 +97,6 @@ export class MusicsController {
        picture ? picture[0] : null, audio ? audio[0] : null);
   }
 
-
-  
 
   @Delete(':id')
   remove(@Param('id') id: string) {
