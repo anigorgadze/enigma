@@ -43,6 +43,11 @@ export class AuthorsController {
     return await this.authorsService.findAll();
   }
 
+  @Get(':id/songs-count')
+  async countSongs(@Param('id') id: string) {
+    return await this.authorsService.countSongs(+id);
+  }
+
   @Get('top-authors')
   async getTopAuthors() {
     return this.authorsService.updateAndGetTopAuthors();
@@ -74,8 +79,5 @@ export class AuthorsController {
     return await this.authorsService.remove(+id);
   }
 
-  @Get(':id/songs-count')
-  async countSongs(@Param('id') id: string) {
-    return await this.authorsService.countSongs(+id);
-  }
+
 }

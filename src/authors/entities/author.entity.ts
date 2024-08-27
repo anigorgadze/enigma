@@ -37,6 +37,9 @@ export class AuthorEntity {
   @Column({ nullable: true })
   userId: number;
 
+  @Column()
+  musicsCount: number;
+
   @Column({ type: 'int', default: 0 })
   totalPlayCount: number;
 
