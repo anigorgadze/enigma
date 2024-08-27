@@ -72,4 +72,14 @@ export class MusicsService {
   remove(id: number) {
     return this.musicsRepository.remove(id);
   }
+
+  async shuffleMusics() {
+    const musics = await this.musicsRepository.findAll();
+    for (let i = musics.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [musics[i], musics[j]] = [musics[j], musics[i]];
+    }
+    return musics;
+  }
+
 }
