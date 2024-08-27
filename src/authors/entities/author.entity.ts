@@ -37,6 +37,9 @@ export class AuthorEntity {
   @Column({ nullable: true })
   userId: number;
 
+  @Column({ type: 'int', default: 0 })
+  totalPlayCount: number;
+
   @ManyToMany(() => MusicEntity, (music) => music.authors, { cascade: true })
   @JoinTable()
   musics: MusicEntity[];

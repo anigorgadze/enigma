@@ -58,6 +58,37 @@ export class AuthorsRepository {
       .getMany();
   }
 
+  async updateAllAuthorsPlayCounts() {
+    const authors = await this.authorsRepository.find({
+      relations: ['musics'],
+    });
+
+    const updatePromises = authors.map(async (author) => {
+      const totalPlayCount = author.musics.reduce((sum, music) => sum + music.playCount, 0);
+      const numberOfMusics = author.musics.length;
+
+      author.totalPlayCount = numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
+
+      return this.authorsRepository.save(author);
+    });
+
+    try {
+      await Promise.all(updatePromises);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update play counts, please try again later!');
+
+    }
+  }
+
+  async topAuthors() {
+    return await this.authorsRepository
+      .createQueryBuilder('author')
+      .orderBy('author.totalPlayCount', 'DESC')
+      .take(4)
+      .getMany();
+  }
+
+
   async update(
     id: number,
     updateAuthorsDto: UpdateAuthorsDto,
