@@ -43,7 +43,6 @@ export class PlaylistsController {
 
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
-    console.log(req.user , 'a')
     return this.playlistsService.remove(+id);
   }
 }

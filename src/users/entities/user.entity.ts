@@ -1,3 +1,4 @@
+import { LikedMusicEntity } from 'src/likedMusics/entities/likedmusics.entity';
 import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
 import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import {
@@ -34,6 +35,10 @@ export class UserEntity {
 
   @OneToMany(() => ListenRecordEntity, (listens) => listens.user)
   listenRecords: ListenRecordEntity[];
+  
+  @OneToMany(() => LikedMusicEntity, (likedMusic) => likedMusic.user)
+  likedMusics: LikedMusicEntity[];
+
   
   @CreateDateColumn()
   createdAt: Date;

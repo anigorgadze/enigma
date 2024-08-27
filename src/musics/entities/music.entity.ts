@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
+import { LikedMusicEntity } from 'src/likedMusics/entities/likedmusics.entity';
 
 @Entity({ name: 'music' })
 export class MusicEntity {
@@ -41,6 +42,9 @@ export class MusicEntity {
 
   @ManyToMany(() => PlaylistEntity, (playlist) => playlist.musics)
   playlist: PlaylistEntity[];
+  
+  @OneToMany(() => LikedMusicEntity, (likedMusic) => likedMusic.music)
+  likedByUsers: LikedMusicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
