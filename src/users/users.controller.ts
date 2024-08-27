@@ -18,6 +18,7 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('users')
+@Public()
 export class UsersController {
   roles:Role[]
   authService: any;

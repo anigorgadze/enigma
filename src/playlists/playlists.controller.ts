@@ -11,8 +11,10 @@ import {
 import { PlaylistsService } from './playlists.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('playlists')
+@Public()
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
 
@@ -41,7 +43,6 @@ export class PlaylistsController {
 
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
-    console.log(req.user , 'a')
     return this.playlistsService.remove(+id);
   }
 }

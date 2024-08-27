@@ -26,7 +26,7 @@ export class AuthController {
     return this.authService.login(req.body.email,req.body.password);
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.User)
   @UseGuards(JwtAuthGuard,RolesGuard)
   @Get('profile')
   getProfile(@Request() req) {
