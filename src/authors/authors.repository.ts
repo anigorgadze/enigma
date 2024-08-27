@@ -33,21 +33,18 @@ export class AuthorsRepository {
   }
 
   async findAll() {
-    const authors =  await this.authorsRepository.find( {
-      relations: ['musics']
-    })
+    const authors = await this.authorsRepository.find({
+      relations: ['musics'],
+    });
 
-    for(const author of authors){
-      const musicsLength = author.musics.length
-      author.musicsCount = musicsLength
+    for (const author of authors) {
+      const musicsLength = author.musics.length;
+      author.musicsCount = musicsLength;
 
-       await this.authorsRepository.save(author)
+      await this.authorsRepository.save(author);
 
-       return authors
+      return authors;
     }
-
-    
-     
   }
 
   async findOne(id: number) {
@@ -74,10 +71,14 @@ export class AuthorsRepository {
     });
 
     const updatePromises = authors.map(async (author) => {
-      const totalPlayCount = author.musics.reduce((sum, music) => sum + music.playCount, 0);
+      const totalPlayCount = author.musics.reduce(
+        (sum, music) => sum + music.playCount,
+        0,
+      );
       const numberOfMusics = author.musics.length;
 
-      author.totalPlayCount = numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
+      author.totalPlayCount =
+        numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
 
       return this.authorsRepository.save(author);
     });
@@ -85,8 +86,9 @@ export class AuthorsRepository {
     try {
       await Promise.all(updatePromises);
     } catch (err) {
-      throw new InternalServerErrorException('Failed to update play counts, please try again later!');
-
+      throw new InternalServerErrorException(
+        'Failed to update play counts, please try again later!',
+      );
     }
   }
 
@@ -97,7 +99,6 @@ export class AuthorsRepository {
       .take(4)
       .getMany();
   }
-
 
   async update(
     id: number,
@@ -127,8 +128,8 @@ export class AuthorsRepository {
       const newMusicIds = updateAuthorsDto.musicsIds.filter(
         (id) => !currentMusicIds.includes(id),
       );
+      
       const allMusicIds = [...currentMusicIds, ...newMusicIds];
-
       author.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
     }
 
