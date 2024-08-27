@@ -18,6 +18,8 @@ export class ListenRecordsRepository {
       order: { listenedAt: 'DESC' },
     });
 
+    console.log(lastRecord);
+
     const currentTime = new Date();
     const timeInterval = 60 * 1000;
     const timeDifference = lastRecord
