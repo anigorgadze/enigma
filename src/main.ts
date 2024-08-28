@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/roles.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { startPing } from './ping/ping';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -30,6 +31,6 @@ async function bootstrap() {
   const port = process.env.PORT || 8080;
   await app.listen(port);
 
-
+  startPing();
 }
 bootstrap();
