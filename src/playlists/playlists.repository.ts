@@ -15,8 +15,7 @@ export class PlaylistsRepository {
   async create(createPlaylistDto: CreatePlaylistDto) {
     const newPlaylist = new PlaylistEntity();
     newPlaylist.title = createPlaylistDto.title;
-    newPlaylist.userId = createPlaylistDto.userId
-
+    newPlaylist.userId = createPlaylistDto.userId;
     if (createPlaylistDto.musicsIds) {
       newPlaylist.musics = createPlaylistDto.musicsIds.map(
         (id) =>
@@ -25,7 +24,6 @@ export class PlaylistsRepository {
           }) as MusicEntity,
       );
     }
-
     try {
       await this.playlistRepository.save(newPlaylist);
       return newPlaylist;
@@ -36,6 +34,28 @@ export class PlaylistsRepository {
     }
   }
 
+  async findLikedMusicPlaylist(userId: number) {
+    return await this.playlistRepository.findOne({
+      where: {
+        userId,
+        isLikedMusicPlaylist: true,
+      },
+    });
+  }
+  async createLikedMusicPlaylist(createPlaylistDto: CreatePlaylistDto) {
+    const newPlaylist = new PlaylistEntity();
+    newPlaylist.title = createPlaylistDto.title;
+    newPlaylist.userId = createPlaylistDto.userId;
+    newPlaylist.isLikedMusicPlaylist = true;
+    try {
+      await this.playlistRepository.save(newPlaylist);
+      return newPlaylist;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Could not create liked music playlist, try again later!',
+      );
+    }
+  }
   async findAll() {
     return await this.playlistRepository
       .createQueryBuilder('playlist')

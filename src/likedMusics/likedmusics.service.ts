@@ -1,12 +1,13 @@
-// likedmusics.service.ts
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LikedMusicsRepository } from './likedmusics.repository';
 
 @Injectable()
 export class LikedMusicService {
-  constructor(
-    private readonly likedMusicsRepository: LikedMusicsRepository,
-  ) {}
+  constructor(private readonly likedMusicsRepository: LikedMusicsRepository) {}
 
   async likeMusic(userId: number, musicId: number) {
     try {
@@ -15,7 +16,9 @@ export class LikedMusicService {
       if (error instanceof ConflictException) {
         throw new UnauthorizedException(error.message);
       }
-      throw new UnauthorizedException('cant like a song,please try again later!');
+      throw new UnauthorizedException(
+        'cant like a song,please try again later!',
+      );
     }
   }
 
@@ -23,7 +26,9 @@ export class LikedMusicService {
     try {
       await this.likedMusicsRepository.deleteByUserAndMusic(userId, musicId);
     } catch (error) {
-      throw new UnauthorizedException('Не удалось удалить лайк, попробуйте позже!');
+      throw new UnauthorizedException(
+        'cant unlike music,please try again later!',
+      );
     }
   }
 
