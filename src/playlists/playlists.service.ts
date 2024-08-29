@@ -10,6 +10,20 @@ export class PlaylistsService {
     return this.playlistRepository.create(createPlaylistDto);
   }
 
+  async getLikedMusicPlaylist(userId: number) {
+    let playlist = await this.playlistRepository.findLikedMusicPlaylist(userId);
+    if (!playlist) {
+      const createPlaylistDto = new CreatePlaylistDto();
+      createPlaylistDto.title = 'Liked Music';
+      createPlaylistDto.userId = userId;
+      playlist =
+        await this.playlistRepository.createLikedMusicPlaylist(
+          createPlaylistDto,
+        );
+    }
+    return playlist;
+  }
+
   findAll() {
     return this.playlistRepository.findAll();
   }

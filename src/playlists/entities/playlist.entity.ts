@@ -22,13 +22,16 @@ export class PlaylistEntity {
 
   @ManyToMany(() => MusicEntity, (music) => music.playlist)
   @JoinTable()
-  musics: MusicEntity[]; 
+  musics: MusicEntity[];
 
-  @ManyToOne(() => UserEntity , (user) => user.playlists) 
+  @ManyToOne(() => UserEntity, (user) => user.playlists)
   user: UserEntity;
 
-  @Column()
+  @Column({ nullable: true })
   userId: number;
+
+  @Column({ default: false })
+  isLikedMusicPlaylist: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

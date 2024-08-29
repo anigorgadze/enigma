@@ -7,13 +7,16 @@ import {
   Param,
   Delete,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { PlaylistsService } from './playlists.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { Public } from 'src/auth/public.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('playlists')
+@UseGuards(JwtAuthGuard)
 @Public()
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
@@ -21,6 +24,12 @@ export class PlaylistsController {
   @Post()
   create(@Body() createPlaylistDto: CreatePlaylistDto) {
     return this.playlistsService.create(createPlaylistDto);
+  }
+
+  @Get('liked')
+  getLikedMusicPlaylist(@Request() req) {
+    console.log(req.user);
+    return this.playlistsService.getLikedMusicPlaylist(req.user.userId);
   }
 
   @Get()

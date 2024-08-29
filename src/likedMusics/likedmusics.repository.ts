@@ -1,4 +1,3 @@
-// likedmusics.repository.ts
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,7 +12,10 @@ export class LikedMusicsRepository {
     private readonly likedMusicsRepository: Repository<LikedMusicEntity>,
   ) {}
 
-  async createAndSave(userId: number, musicId: number): Promise<LikedMusicEntity> {
+  async createAndSave(
+    userId: number,
+    musicId: number,
+  ): Promise<LikedMusicEntity> {
     const likedMusic = this.likedMusicsRepository.create({
       user: { id: userId } as UserEntity,
       music: { id: musicId } as MusicEntity,
@@ -22,7 +24,7 @@ export class LikedMusicsRepository {
     try {
       return await this.likedMusicsRepository.save(likedMusic);
     } catch (error) {
-      if (error.code === '23505') { 
+      if (error.code === '23505') {
         throw new ConflictException('you already liked this song');
       }
       throw error;

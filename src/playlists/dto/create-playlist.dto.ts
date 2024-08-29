@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreatePlaylistDto {
@@ -10,5 +11,6 @@ export class CreatePlaylistDto {
     musicsIds: number[];
 
     @IsNumber()
+    @Optional()
     userId: number;
 }
