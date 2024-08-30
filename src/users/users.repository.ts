@@ -46,6 +46,11 @@ export class UsersRepository {
     return this.usersRepository.findOne({ where: { id } });
   }
 
+  async unblockUser(id: number) {
+    await this.usersRepository.update(id, { blocked: false });
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
   
   async update(id: number, updateUsersDto: UpdateUsersDto) {
     if (updateUsersDto.password) {
