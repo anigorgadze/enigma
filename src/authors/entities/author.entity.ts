@@ -24,10 +24,10 @@ export class AuthorEntity {
   @Column({ type: 'varchar' })
   lastName: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'longtext' })
   biography: string;
 
-  
+
   @Column({ nullable: true })
   releaseDate: string;
 

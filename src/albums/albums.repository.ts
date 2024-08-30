@@ -80,6 +80,7 @@ export class AlbumsRepository {
       const newMusics = audioUrls.map((url) => {
         const music = new MusicEntity();
         music.title = updateAlbumsDto.musicTitle || 'Untitled';
+        music.artistName = updateAlbumsDto.artistName;
         music.audioUrl = url;
         music.coverImgUrl = musicPictureUrl;
         return music;
@@ -114,17 +115,20 @@ export class AlbumsRepository {
     }
   }
 
-
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({
       relations: ['musics'],
     });
 
     const updatePromises = albums.map(async (album) => {
-      const totalPlayCount = album.musics.reduce((sum, music) => sum + music.playCount, 0);
+      const totalPlayCount = album.musics.reduce(
+        (sum, music) => sum + music.playCount,
+        0,
+      );
       const numberOfMusics = album.musics.length;
 
-      album.totalPlayCount = numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
+      album.totalPlayCount =
+        numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
 
       return this.albumsRepository.save(album);
     });
@@ -133,7 +137,9 @@ export class AlbumsRepository {
       await Promise.all(updatePromises);
     } catch (err) {
       console.log(err);
-      throw new InternalServerErrorException('Failed to update play counts, please try again later!');
+      throw new InternalServerErrorException(
+        'Failed to update play counts, please try again later!',
+      );
     }
   }
 
@@ -158,6 +164,4 @@ export class AlbumsRepository {
       .where('album.id = :id', { id })
       .getOne();
   }
-
-  
 }
