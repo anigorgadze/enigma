@@ -49,6 +49,12 @@ export class UsersController {
     return this.usersService.blockUser(id);
   }
   
+  @Patch(':id/unblock')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.Admin)
+  unblockUser(@Param('id') id: number) {
+    return this.usersService.unblockUser(id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() createUsersDto: CreateUsersDto) {
