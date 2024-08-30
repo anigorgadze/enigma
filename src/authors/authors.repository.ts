@@ -104,6 +104,7 @@ export class AuthorsRepository {
     id: number,
     updateAuthorsDto: UpdateAuthorsDto,
     coverImgUrl?: string,
+    albumImgUrl?: string,
   ) {
     const author = await this.authorsRepository.findOne({
       where: { id },
@@ -123,12 +124,29 @@ export class AuthorsRepository {
       author.coverImgUrl = coverImgUrl;
     }
 
+    if (albumImgUrl) {
+      const album = new AlbumEntity();
+      album.title = updateAuthorsDto.albumTitle;
+      album.artistName = updateAuthorsDto.albumArtistName;
+      album.coverImgUrl = albumImgUrl;
+      album.releaseDate = updateAuthorsDto.albumReleaseDate;
+
+      try {
+        const savedAlbum = await this.authorsRepository.manager.save(album);
+        author.albums = [...author.albums, savedAlbum];
+      } catch (err) {
+        throw new InternalServerErrorException(
+          'Could not create album, try again later!',
+        );
+      }
+    }
+
     if (updateAuthorsDto.musicsIds) {
       const currentMusicIds = author.musics.map((music) => music.id);
       const newMusicIds = updateAuthorsDto.musicsIds.filter(
         (id) => !currentMusicIds.includes(id),
       );
-      
+
       const allMusicIds = [...currentMusicIds, ...newMusicIds];
       author.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
     }

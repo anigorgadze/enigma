@@ -6,6 +6,7 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
+import { CreateAlbumsDto } from 'src/albums/dto/create-albums.dto';
 
 export class CreateAuthorsDto {
   @IsString()
@@ -23,11 +24,20 @@ export class CreateAuthorsDto {
 
   @IsOptional()
   @IsNumber({}, { each: true })
-  @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
+  @Transform(({ value }) => (Array.isArray(value) ? value.map(Number) : []))
   musicsIds: number[];
 
   @IsNumber({}, { each: true })
   @IsOptional()
-  @Transform(({ value }) => Array.isArray(value) ? value.map(Number) : [])
+  @Transform(({ value }) => (Array.isArray(value) ? value.map(Number) : []))
   albumsIds: number[];
+
+  @IsString()
+  albumTitle: string;
+
+  @IsString()
+  albumReleaseDate: string;
+
+  @IsString()
+  albumArtistName: string;
 }

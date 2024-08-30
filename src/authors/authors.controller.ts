@@ -18,6 +18,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 interface Files {
   picture?: Express.Multer.File[];
+  albumPicture?: Express.Multer.File[];
 }
 
 @Controller('authors')
@@ -53,24 +54,29 @@ export class AuthorsController {
     return this.authorsService.updateAndGetTopAuthors();
   }
 
-
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.authorsService.findOne(+id);
   }
 
   @Patch(':id')
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'albumPicture', maxCount: 1 },
+    ]),
+  )
   async update(
     @Param('id') id: string,
     @Body() updateAuthorDto: UpdateAuthorsDto,
     @UploadedFiles() files?: Files,
   ) {
-    const { picture } = files || {};
+    const { picture, albumPicture } = files || {};
     return await this.authorsService.update(
       +id,
       updateAuthorDto,
       picture ? picture[0] : undefined,
+      albumPicture ? albumPicture[0] : undefined,
     );
   }
 
@@ -78,6 +84,4 @@ export class AuthorsController {
   async remove(@Param('id') id: string) {
     return await this.authorsService.remove(+id);
   }
-
-
 }
