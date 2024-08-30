@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from 'src/users/users.repository';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
 import { Role } from './role.enum';
 
 @Injectable()
@@ -10,7 +9,6 @@ export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService
   ) { }
 
   async login(email: string, pass: string): Promise<{ access_token: string }> {
@@ -18,6 +16,10 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException();
+    }
+
+    if(user.blocked){
+      throw new UnauthorizedException('sorry, დაბლოკილი ხარ')
     }
 
     const payload = { sub: user.id, email: user.email, role: user.isAdmin ? Role.Admin : Role.User };

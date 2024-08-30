@@ -41,7 +41,12 @@ export class UsersRepository {
       .getOne();
   }
 
+  async blockUser(id: number) {
+    await this.usersRepository.update(id, { blocked: true });
+    return this.usersRepository.findOne({ where: { id } });
+  }
 
+  
   async update(id: number, updateUsersDto: UpdateUsersDto) {
     if (updateUsersDto.password) {
       const salt = await bcrypt.genSalt();
