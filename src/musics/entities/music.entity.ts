@@ -22,6 +22,9 @@ export class MusicEntity {
   @Column({ type: 'varchar' })
   title: string;
 
+  @Column({type:'varchar'})
+  artistName:string
+
   @Column({ type: 'varchar' })
   coverImgUrl: string;
 
