@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { AuthorsRepository } from './authors.repository';
-import { CreateAuthorsDto } from './dto/create-authors.dto';
-import { UpdateAuthorsDto } from './dto/update-authors.dto';
-import { FilesService } from 'src/files/files.service';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { UpdateAuthorsDto } from "./dto/update-authors.dto";
+import { CreateAuthorsDto } from "./dto/create-authors.dto";
+import { AuthorsRepository } from "./authors.repository";
+import { FilesService } from "src/files/files.service";
 
 @Injectable()
 export class AuthorsService {
@@ -15,8 +15,18 @@ export class AuthorsService {
     createAuthorsDto: CreateAuthorsDto,
     picture: Express.Multer.File,
   ) {
-    const coverImgUrl = await this.filesService.uploadFile(picture, 'Images');
-    return this.authorsRepository.create(createAuthorsDto, coverImgUrl.url);
+    try {
+      const { url: coverImgUrl } = await this.filesService.uploadFile(
+        picture,
+        'Images',
+      );
+      if (!coverImgUrl) {
+        throw new Error('Failed to upload cover image');
+      }
+      return this.authorsRepository.create(createAuthorsDto, coverImgUrl);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create author');
+    }
   }
 
   async findAll() {
@@ -31,18 +41,43 @@ export class AuthorsService {
     id: number,
     updateAuthorsDto: UpdateAuthorsDto,
     picture?: Express.Multer.File,
+    albumPicture?: Express.Multer.File,
   ) {
     let coverImgUrl: string | undefined;
+    let albumImgUrl: string | undefined;
 
-    if (picture) {
-      coverImgUrl = (await this.filesService.uploadFile(picture, 'Images')).url;
+    try {
+      if (albumPicture) {
+        const albumUploadResult = await this.filesService.uploadFile(
+          albumPicture,
+          'Images',
+        );
+        albumImgUrl = albumUploadResult?.url;
+        if (!albumImgUrl) {
+          throw new Error('Failed to upload album image');
+        }
+      }
+
+      if (picture) {
+        const coverUploadResult = await this.filesService.uploadFile(
+          picture,
+          'Images',
+        );
+        coverImgUrl = coverUploadResult?.url;
+        if (!coverImgUrl) {
+          throw new Error('Failed to upload cover image');
+        }
+      }
+
+      return await this.authorsRepository.update(
+        id,
+        updateAuthorsDto,
+        coverImgUrl,
+        albumImgUrl,
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update author');
     }
-
-    return await this.authorsRepository.update(
-      id,
-      updateAuthorsDto,
-      coverImgUrl,
-    );
   }
 
   async remove(id: number) {
