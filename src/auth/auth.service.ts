@@ -28,6 +28,8 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+
+    
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
