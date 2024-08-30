@@ -15,7 +15,7 @@ export class UsersService {
     
 
     if (userExist) {
-      throw new UnauthorizedException('User exits');
+      throw new UnauthorizedException('User exists');
     }
     return this.usersRepository.create(createUsersDto);
   }
