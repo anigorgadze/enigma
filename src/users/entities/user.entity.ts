@@ -30,6 +30,9 @@ export class UserEntity {
   @Column({ default: false, type: 'boolean' })
   isAdmin: boolean;
 
+  @Column({ default: false  , type: 'boolean'})
+  blocked: boolean;
+
   @OneToMany(() => PlaylistEntity, (playlist) => playlist.user)
   playlists: PlaylistEntity[];
 

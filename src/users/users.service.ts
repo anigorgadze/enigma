@@ -24,6 +24,11 @@ export class UsersService {
     return await this.usersRepository.findByEmail(email)
   }
 
+  async blockUser(id: number) {
+    return this.usersRepository.blockUser(id);
+  }
+
+
   findAll() {
     return this.usersRepository.findAll();
   }
