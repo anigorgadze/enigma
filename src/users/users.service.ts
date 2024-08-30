@@ -28,6 +28,10 @@ export class UsersService {
     return this.usersRepository.blockUser(id);
   }
 
+  async unblockUser(id: number) {
+    return this.usersRepository.unblockUser(id);
+  }
+
 
   findAll() {
     return this.usersRepository.findAll();
