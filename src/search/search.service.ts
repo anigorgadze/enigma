@@ -16,10 +16,12 @@ export class SearchService {
     const authors = await this.authorsRepository.findByName(search);
     const albums = await this.albumsRepository.findByTitle(search);
 
-    return {
-      musics,
-      authors,
-      albums,
-    };
+    const results = [
+      ...musics.map((music) => ({ type: 'music', data: music })),
+      ...authors.map((author) => ({ type: 'author', data: author })),
+      ...albums.map((album) => ({ type: 'album', data: album })),
+    ];
+
+    return results;
   }
 }

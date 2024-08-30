@@ -6,7 +6,7 @@ import { Public } from 'src/auth/public.decorator';
 @Public()
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
-  
+
   @Get()
   findAll(@Query('searchField') search: string) {
     return this.searchService.search(search);

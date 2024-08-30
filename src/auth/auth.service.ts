@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async login(email: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.usersRepository.findByEmail(email);
@@ -18,11 +18,15 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    if(user.blocked){
-      throw new UnauthorizedException('sorry, დაბლოკილი ხარ')
+    if (user.blocked) {
+      throw new UnauthorizedException('sorry, დაბლოკილი ხარ');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.isAdmin ? Role.Admin : Role.User };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.isAdmin ? Role.Admin : Role.User,
+    };
 
     const isPasswordCorrect = bcrypt.compareSync(pass, user.password);
 
@@ -34,5 +38,4 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-
 }
