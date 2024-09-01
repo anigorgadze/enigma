@@ -1,12 +1,5 @@
 import { Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsDateString,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class CreateAlbumsDto {
   @IsString()
@@ -19,8 +12,11 @@ export class CreateAlbumsDto {
   artistName: string;
 
   @IsString()
+  authorId: number;
+
+  @IsString()
   @IsOptional()
-  musicTitle:string
+  musicTitle: string;
 
   @IsArray()
   @IsOptional()
@@ -34,6 +30,5 @@ export class CreateAlbumsDto {
 
   @IsString()
   @IsOptional()
-  coverImgUrl: string
+  coverImgUrl: string;
 }
-

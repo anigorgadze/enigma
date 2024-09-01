@@ -1,9 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { AlbumsRepository } from './albums.repository';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { FilesService } from 'src/files/files.service';
 import { MusicEntity } from 'src/musics/entities/music.entity';
+import { AlbumEntity } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsService {
@@ -18,6 +23,14 @@ export class AlbumsService {
       'Images',
     );
     return this.albumsRepository.create(createAlbumsDto, coverImgUrl);
+  }
+
+  async findAlbumById(id: number): Promise<AlbumEntity> {
+    const album = await this.albumsRepository.findOne(id);
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+    return album;
   }
 
   findAll() {

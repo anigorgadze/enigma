@@ -7,12 +7,14 @@ import { Repository } from 'typeorm';
 import { AuthorEntity } from 'src/authors/entities/author.entity';
 import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
 export class MusicsRepository {
   constructor(
     @InjectRepository(MusicEntity)
     private musicsRepository: Repository<MusicEntity>,
+    private readonly albumsService: AlbumsService,
   ) {}
 
   async create(
@@ -20,19 +22,25 @@ export class MusicsRepository {
     coverImgUrl: string,
     audioUrl: string,
   ) {
-    const newMusic = this.musicsRepository.create({
-      ...createMusicsDto,
-      coverImgUrl,
-      audioUrl,
-    });
+    const album = await this.albumsService.findAlbumById(
+      createMusicsDto.albumId,
+    );
 
-    try {
-      return await this.musicsRepository.save(newMusic);
-    } catch (exc) {
-      throw new InternalServerErrorException(
-        'Could not create music, try again later!',
-      );
-    }
+    const music = new MusicEntity();
+    music.artistName = createMusicsDto.artistName;
+    music.title = createMusicsDto.title;
+    music.audioUrl = audioUrl;
+    music.coverImgUrl = coverImgUrl;
+
+    await this.musicsRepository.save(music);
+
+    await this.musicsRepository
+      .createQueryBuilder()
+      .relation(MusicEntity, 'albums')
+      .of(music)
+      .add(album);
+
+    return music;
   }
 
   findByTitle(search: string) {
@@ -152,7 +160,9 @@ export class MusicsRepository {
     const music = await this.musicsRepository.findOneBy({ id });
 
     if (music.id === 11) {
-      throw new InternalServerErrorException('Frustra amas ver washliiiiiiiiiiiiiiiiiiiii');
+      throw new InternalServerErrorException(
+        'Frustra amas ver washliiiiiiiiiiiiiiiiiiiii',
+      );
     } else {
       await this.musicsRepository
         .createQueryBuilder('music')

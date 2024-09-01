@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateMusicsDto {
   @IsString()
@@ -7,6 +7,10 @@ export class CreateMusicsDto {
 
   @IsString()
   artistName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  albumId: number;
 
   @IsNumber({}, { each: true })
   @IsOptional()

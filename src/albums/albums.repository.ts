@@ -1,33 +1,41 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, createQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AlbumEntity } from './entities/album.entity';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { AuthorEntity } from 'src/authors/entities/author.entity';
+import { AuthorsService } from 'src/authors/authors.service';
 
 @Injectable()
 export class AlbumsRepository {
   constructor(
     @InjectRepository(AlbumEntity)
     private albumsRepository: Repository<AlbumEntity>,
+    private authorsService: AuthorsService,
   ) {}
 
   async create(createAlbumsDto: CreateAlbumsDto, picture: string) {
+    const author = await this.authorsService.findAuthorById(
+      createAlbumsDto.authorId,
+    );
+
     const newAlbum = new AlbumEntity();
     newAlbum.artistName = createAlbumsDto.artistName;
     newAlbum.coverImgUrl = picture;
     newAlbum.title = createAlbumsDto.title;
     newAlbum.releaseDate = createAlbumsDto.releaseDate;
 
-    try {
-      await this.albumsRepository.save(newAlbum);
-      return newAlbum;
-    } catch (exc) {
-      console.log(exc);
-      throw new InternalServerErrorException();
-    }
+    await this.albumsRepository.save(newAlbum);
+
+    await this.albumsRepository
+      .createQueryBuilder()
+      .relation(AlbumEntity, 'authors')
+      .of(newAlbum)
+      .add(author);
+
+    return newAlbum;
   }
 
   async findAll() {

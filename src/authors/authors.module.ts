@@ -6,12 +6,10 @@ import { AuthorsService } from './authors.service';
 import { AuthorsRepository } from './authors.repository';
 import { FilesModule } from 'src/files/files.module';
 
-
-
 @Module({
-  imports: [TypeOrmModule.forFeature([AuthorEntity]) , FilesModule],
+  imports: [TypeOrmModule.forFeature([AuthorEntity]), FilesModule],
   controllers: [AuthorsController],
   providers: [AuthorsService, AuthorsRepository],
-  exports: [AuthorsRepository],
+  exports: [AuthorsRepository, AuthorsService],
 })
 export class AuthorsModule {}

@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   Request,
-  Query
+  Query,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
@@ -34,15 +34,11 @@ export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'picture', maxCount: 1 },
-    ]),
-  )
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
   create(
     @UploadedFiles() files: Files,
     @Body() createAlbumsDto: CreateAlbumsDto,
-    @Request() req
+    @Request() req,
   ) {
     const { picture } = files;
 
@@ -61,7 +57,6 @@ export class AlbumsController {
   async getTopAlbums() {
     return this.albumsService.updateAndGetTopAlbums();
   }
-
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
@@ -89,7 +84,7 @@ export class AlbumsController {
       updateAlbumsDto,
       picture ? picture[0] : null,
       audio,
-      musicPicture ? musicPicture[0] : null
+      musicPicture ? musicPicture[0] : null,
     );
   }
 
@@ -98,6 +93,4 @@ export class AlbumsController {
   remove(@Param('id') id: string) {
     return this.albumsService.remove(+id);
   }
-
-
 }

@@ -1,12 +1,5 @@
 import { Transform } from 'class-transformer';
-import {
-  IsDateString,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUrl,
-} from 'class-validator';
-import { CreateAlbumsDto } from 'src/albums/dto/create-albums.dto';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateAuthorsDto {
   @IsString()
@@ -33,11 +26,14 @@ export class CreateAuthorsDto {
   albumsIds: number[];
 
   @IsString()
+  @IsOptional()
   albumTitle: string;
 
   @IsString()
+  @IsOptional()
   albumReleaseDate: string;
 
   @IsString()
+  @IsOptional()
   albumArtistName: string;
 }

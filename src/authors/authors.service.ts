@@ -1,8 +1,13 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { UpdateAuthorsDto } from "./dto/update-authors.dto";
-import { CreateAuthorsDto } from "./dto/create-authors.dto";
-import { AuthorsRepository } from "./authors.repository";
-import { FilesService } from "src/files/files.service";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { UpdateAuthorsDto } from './dto/update-authors.dto';
+import { CreateAuthorsDto } from './dto/create-authors.dto';
+import { AuthorsRepository } from './authors.repository';
+import { FilesService } from 'src/files/files.service';
+import { AuthorEntity } from './entities/author.entity';
 
 @Injectable()
 export class AuthorsService {
@@ -78,6 +83,14 @@ export class AuthorsService {
     } catch (error) {
       throw new InternalServerErrorException('Failed to update author');
     }
+  }
+
+  async findAuthorById(id: number): Promise<AuthorEntity> {
+    const author = await this.authorsRepository.findOne(id);
+    if (!author) {
+      throw new NotFoundException('Author not found');
+    }
+    return author;
   }
 
   async remove(id: number) {

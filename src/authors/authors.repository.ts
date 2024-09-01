@@ -34,7 +34,7 @@ export class AuthorsRepository {
 
   async findAll() {
     const authors = await this.authorsRepository.find({
-      relations: ['musics'],
+      relations: ['musics', 'albums'],
     });
 
     for (const author of authors) {
@@ -50,8 +50,6 @@ export class AuthorsRepository {
   async findOne(id: number) {
     return await this.authorsRepository
       .createQueryBuilder('author')
-      .leftJoinAndSelect('author.musics', 'authorMusics')
-      .leftJoinAndSelect('author.albums', 'authorAlbums')
       .where('author.id = :id', { id })
       .getOne();
   }
