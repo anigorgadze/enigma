@@ -51,6 +51,12 @@ export class MusicsController {
   findAll() {
     return this.musicsService.findAll();
   }
+  
+  @Get('recent')
+  async getRecentlyAddedMusics() {
+    return this.musicsService.getRecentlyAddedMusics();
+  }
+
 
   @Get('shuffle')
   async shuffleMusics() {

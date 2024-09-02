@@ -51,6 +51,10 @@ export class AlbumsController {
   findAll() {
     return this.albumsService.findAll();
   }
+  @Get('recent')
+  async getRecentlyAddedAlbums() {
+    return this.albumsService.getRecentlyAddedAlbums();
+  }
 
   @Get('top-albums')
   async getTopAlbums() {

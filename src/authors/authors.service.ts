@@ -44,6 +44,11 @@ export class AuthorsService {
 
   async update() {}
 
+  async getRecentlyAddedAuthors() {
+    return await this.authorsRepository.recentlyAddedAuthors();
+  }
+
+
   async findAuthorById(id: number): Promise<AuthorEntity> {
     const author = await this.authorsRepository.findOne(id);
     if (!author) {

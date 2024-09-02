@@ -97,6 +97,14 @@ export class AuthorsRepository {
 
   async update() {}
 
+  async recentlyAddedAuthors() {
+    return await this.authorsRepository
+      .createQueryBuilder('author')
+      .orderBy('author.createdAt' , 'DESC')
+      .take(6)
+      .getMany();
+  }
+
   async remove(id: number) {
     await this.authorsRepository.softDelete(id);
     return this.authorsRepository

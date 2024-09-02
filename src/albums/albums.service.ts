@@ -51,4 +51,9 @@ export class AlbumsService {
     await this.albumsRepository.updateAllAlbumsPlayCounts();
     return this.albumsRepository.topAlbums();
   }
+
+  async getRecentlyAddedAlbums() {
+    return await this.albumsRepository.recentlyAddedAlbums();
+  }
+
 }
