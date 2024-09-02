@@ -41,7 +41,10 @@ export class AuthorsController {
   async findAll() {
     return await this.authorsService.findAll();
   }
-
+  @Get('recent')
+  async getRecentlyAddedAuthors() {
+    return this.authorsService.getRecentlyAddedAuthors();
+  }
   @Get(':id/songs-count')
   async countSongs(@Param('id') id: string) {
     return await this.authorsService.countSongs(+id);

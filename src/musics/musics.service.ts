@@ -45,6 +45,9 @@ export class MusicsService {
   remove(id: number) {
     return this.musicsRepository.remove(id);
   }
+  async getRecentlyAddedMusics() {
+    return await this.musicsRepository.recentlyAddedMusics();
+  }
 
   async shuffleMusics() {
     const musics = await this.musicsRepository.findAll();

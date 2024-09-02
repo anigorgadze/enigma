@@ -87,6 +87,14 @@ export class MusicsRepository {
 
   async update() {}
 
+  async recentlyAddedMusics() {
+    return await this.musicsRepository
+      .createQueryBuilder('music')
+      .orderBy('music.createdAt' , 'DESC')
+      .take(6)
+      .getMany();
+  }
+
   async remove(id: number) {
     const music = await this.musicsRepository.findOneBy({ id });
 

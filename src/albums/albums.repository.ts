@@ -98,6 +98,15 @@ export class AlbumsRepository {
       .getMany();
   }
 
+  async recentlyAddedAlbums(): Promise<AlbumEntity[]> {
+    return await this.albumsRepository
+      .createQueryBuilder('album')
+      .orderBy('album.createdAt' , 'DESC')
+      .take(6)
+      .getMany();
+  }
+
+
   async remove(id: number) {
     await this.albumsRepository
       .createQueryBuilder('album')
