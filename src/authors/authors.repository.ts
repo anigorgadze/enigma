@@ -101,7 +101,7 @@ export class AuthorsRepository {
     return await this.authorsRepository
       .createQueryBuilder('author')
       .orderBy('author.createdAt' , 'DESC')
-      .take(6)
+      .take(8)
       .getMany();
   }
 

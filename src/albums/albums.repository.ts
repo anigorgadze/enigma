@@ -102,7 +102,7 @@ export class AlbumsRepository {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .orderBy('album.createdAt' , 'DESC')
-      .take(6)
+      .take(8)
       .getMany();
   }
 
