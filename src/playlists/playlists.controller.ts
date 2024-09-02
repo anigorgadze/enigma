@@ -16,12 +16,13 @@ import { Public } from 'src/auth/public.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('playlists')
+@Public()
+@UseGuards(JwtAuthGuard)
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
 
   @Post()
   create(@Body() createPlaylistDto: CreatePlaylistDto, @Request() req) {
-    
     return this.playlistsService.create(createPlaylistDto, req.user.userId);
   }
 
