@@ -20,6 +20,7 @@ export class ListenRecordsController {
   constructor(private readonly listenRecordsService: ListenRecordsService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Public()
   @Post()
   async create(
     @Request() req,
