@@ -40,34 +40,7 @@ export class MusicsService {
     return this.musicsRepository.findOne(id);
   }
 
-  async update(
-    id: number,
-    updateMusicsDto: UpdateMusicsDto,
-    picture?: Express.Multer.File,
-    audio?: Express.Multer.File,
-  ) {
-    let coverImgUrl: string | undefined;
-    let audioUrl: string | undefined;
-
-    if (picture) {
-      const uploadedPicture = await this.filesService.uploadFile(
-        picture,
-        'Images',
-      );
-      coverImgUrl = uploadedPicture.url;
-    }
-
-    if (audio) {
-      const uploadedAudio = await this.filesService.uploadFile(audio, 'Musics');
-      audioUrl = uploadedAudio.url;
-    }
-
-    return this.musicsRepository.update(id, {
-      ...updateMusicsDto,
-      ...(coverImgUrl && { coverImgUrl }),
-      ...(audioUrl && { audioUrl }),
-    });
-  }
+  async update() {}
 
   remove(id: number) {
     return this.musicsRepository.remove(id);
@@ -81,5 +54,4 @@ export class MusicsService {
     }
     return musics;
   }
-
 }

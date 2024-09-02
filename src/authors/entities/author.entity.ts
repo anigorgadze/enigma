@@ -20,13 +20,11 @@ export class AuthorEntity {
   @Column({ type: 'varchar' })
   artistName: string;
 
-
   @Column({ type: 'varchar' })
   lastName: string;
 
   @Column({ type: 'longtext' })
   biography: string;
-
 
   @Column({ nullable: true })
   releaseDate: string;

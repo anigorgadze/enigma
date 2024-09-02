@@ -12,13 +12,11 @@ import {
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
-import { UpdateAuthorsDto } from './dto/update-authors.dto';
 import { Public } from 'src/auth/public.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 interface Files {
   picture?: Express.Multer.File[];
-  albumPicture?: Express.Multer.File[];
 }
 
 @Controller('authors')
@@ -60,25 +58,7 @@ export class AuthorsController {
   }
 
   @Patch(':id')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'picture', maxCount: 1 },
-      { name: 'albumPicture', maxCount: 1 },
-    ]),
-  )
-  async update(
-    @Param('id') id: string,
-    @Body() updateAuthorDto: UpdateAuthorsDto,
-    @UploadedFiles() files?: Files,
-  ) {
-    const { picture, albumPicture } = files || {};
-    return await this.authorsService.update(
-      +id,
-      updateAuthorDto,
-      picture ? picture[0] : undefined,
-      albumPicture ? albumPicture[0] : undefined,
-    );
-  }
+  async update() {}
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
