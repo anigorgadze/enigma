@@ -46,6 +46,8 @@ export class AuthorsRepository {
     return await this.authorsRepository
       .createQueryBuilder('author')
       .where('author.id = :id', { id })
+      .leftJoinAndSelect('author.musics','musics')
+      .leftJoinAndSelect('author.albums','albums')
       .getOne();
   }
 
