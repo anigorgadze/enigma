@@ -38,7 +38,6 @@ export class AlbumsController {
   create(
     @UploadedFiles() files: Files,
     @Body() createAlbumsDto: CreateAlbumsDto,
-    @Request() req,
   ) {
     const { picture } = files;
 
@@ -65,28 +64,7 @@ export class AlbumsController {
   }
 
   @Patch(':id')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'picture', maxCount: 1 },
-      { name: 'musicPicture', maxCount: 1 },
-      { name: 'audio', maxCount: 1 },
-    ]),
-  )
-  async update(
-    @Param('id') id: string,
-    @Body() updateAlbumsDto: UpdateAlbumsDto,
-    @UploadedFiles() files?: Files,
-  ) {
-    const { picture, audio, musicPicture } = files;
-
-    return await this.albumsService.update(
-      +id,
-      updateAlbumsDto,
-      picture ? picture[0] : null,
-      audio,
-      musicPicture ? musicPicture[0] : null,
-    );
-  }
+  update() {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')

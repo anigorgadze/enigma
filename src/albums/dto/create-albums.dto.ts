@@ -16,19 +16,5 @@ export class CreateAlbumsDto {
 
   @IsString()
   @IsOptional()
-  musicTitle: string;
-
-  @IsArray()
-  @IsOptional()
-  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
-  musicsIds: number[];
-
-  @IsArray()
-  @IsOptional()
-  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
-  authorsIds: number[];
-
-  @IsString()
-  @IsOptional()
   coverImgUrl: string;
 }

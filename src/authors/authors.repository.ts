@@ -3,9 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthorEntity } from './entities/author.entity';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
-import { UpdateAuthorsDto } from './dto/update-authors.dto';
-import { MusicEntity } from 'src/musics/entities/music.entity';
-import { AlbumEntity } from 'src/albums/entities/album.entity';
 
 @Injectable()
 export class AuthorsRepository {
@@ -36,13 +33,11 @@ export class AuthorsRepository {
     const authors = await this.authorsRepository.find({
       relations: ['musics', 'albums'],
     });
-
     for (const author of authors) {
       const musicsLength = author.musics.length;
       author.musicsCount = musicsLength;
 
       await this.authorsRepository.save(author);
-
       return authors;
     }
   }
@@ -98,76 +93,7 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  async update(
-    id: number,
-    updateAuthorsDto: UpdateAuthorsDto,
-    coverImgUrl?: string,
-    albumImgUrl?: string,
-  ) {
-    const author = await this.authorsRepository.findOne({
-      where: { id },
-      relations: ['musics', 'albums'],
-    });
-
-    if (!author) {
-      throw new InternalServerErrorException('Author not found');
-    }
-
-    author.artistName = updateAuthorsDto.artistName;
-    author.releaseDate = updateAuthorsDto.releaseDate;
-    author.lastName = updateAuthorsDto.lastName;
-    author.biography = updateAuthorsDto.biography;
-
-    if (coverImgUrl) {
-      author.coverImgUrl = coverImgUrl;
-    }
-
-    if (albumImgUrl) {
-      const album = new AlbumEntity();
-      album.title = updateAuthorsDto.albumTitle;
-      album.artistName = updateAuthorsDto.albumArtistName;
-      album.coverImgUrl = albumImgUrl;
-      album.releaseDate = updateAuthorsDto.albumReleaseDate;
-
-      try {
-        const savedAlbum = await this.authorsRepository.manager.save(album);
-        author.albums = [...author.albums, savedAlbum];
-      } catch (err) {
-        throw new InternalServerErrorException(
-          'Could not create album, try again later!',
-        );
-      }
-    }
-
-    if (updateAuthorsDto.musicsIds) {
-      const currentMusicIds = author.musics.map((music) => music.id);
-      const newMusicIds = updateAuthorsDto.musicsIds.filter(
-        (id) => !currentMusicIds.includes(id),
-      );
-
-      const allMusicIds = [...currentMusicIds, ...newMusicIds];
-      author.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
-    }
-
-    if (updateAuthorsDto.albumsIds) {
-      const currentAlbumIds = author.albums.map((album) => album.id);
-      const newAlbumIds = updateAuthorsDto.albumsIds.filter(
-        (id) => !currentAlbumIds.includes(id),
-      );
-      const allAlbumIds = [...currentAlbumIds, ...newAlbumIds];
-
-      author.albums = allAlbumIds.map((id) => ({ id }) as AlbumEntity);
-    }
-
-    try {
-      await this.authorsRepository.save(author);
-      return author;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        'Could not update author, try again later!',
-      );
-    }
-  }
+  async update() {}
 
   async remove(id: number) {
     await this.authorsRepository.softDelete(id);

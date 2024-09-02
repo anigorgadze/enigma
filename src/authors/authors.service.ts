@@ -42,48 +42,7 @@ export class AuthorsService {
     return await this.authorsRepository.findOne(id);
   }
 
-  async update(
-    id: number,
-    updateAuthorsDto: UpdateAuthorsDto,
-    picture?: Express.Multer.File,
-    albumPicture?: Express.Multer.File,
-  ) {
-    let coverImgUrl: string | undefined;
-    let albumImgUrl: string | undefined;
-
-    try {
-      if (albumPicture) {
-        const albumUploadResult = await this.filesService.uploadFile(
-          albumPicture,
-          'Images',
-        );
-        albumImgUrl = albumUploadResult?.url;
-        if (!albumImgUrl) {
-          throw new Error('Failed to upload album image');
-        }
-      }
-
-      if (picture) {
-        const coverUploadResult = await this.filesService.uploadFile(
-          picture,
-          'Images',
-        );
-        coverImgUrl = coverUploadResult?.url;
-        if (!coverImgUrl) {
-          throw new Error('Failed to upload cover image');
-        }
-      }
-
-      return await this.authorsRepository.update(
-        id,
-        updateAuthorsDto,
-        coverImgUrl,
-        albumImgUrl,
-      );
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to update author');
-    }
-  }
+  async update() {}
 
   async findAuthorById(id: number): Promise<AuthorEntity> {
     const author = await this.authorsRepository.findOne(id);

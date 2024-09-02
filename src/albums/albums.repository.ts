@@ -27,13 +27,9 @@ export class AlbumsRepository {
     newAlbum.title = createAlbumsDto.title;
     newAlbum.releaseDate = createAlbumsDto.releaseDate;
 
-    await this.albumsRepository.save(newAlbum);
+    newAlbum.authors = [author];
 
-    await this.albumsRepository
-      .createQueryBuilder()
-      .relation(AlbumEntity, 'authors')
-      .of(newAlbum)
-      .add(author);
+    await this.albumsRepository.save(newAlbum);
 
     return newAlbum;
   }
@@ -64,64 +60,7 @@ export class AlbumsRepository {
       .getMany();
   }
 
-  async update(
-    id: number,
-    updateAlbumsDto: UpdateAlbumsDto,
-    coverImgUrl?: string,
-    audioUrls?: string[],
-    musicPictureUrl?: string,
-  ) {
-    const album = await this.albumsRepository.findOne({
-      where: { id },
-      relations: ['musics', 'authors'],
-    });
-
-    if (!album) {
-      throw new InternalServerErrorException('Album not found');
-    }
-
-    album.title = updateAlbumsDto.title;
-    album.releaseDate = updateAlbumsDto.releaseDate;
-    album.coverImgUrl = coverImgUrl || album.coverImgUrl;
-
-    if (audioUrls) {
-      const newMusics = audioUrls.map((url) => {
-        const music = new MusicEntity();
-        music.title = updateAlbumsDto.musicTitle || 'Untitled';
-        music.artistName = updateAlbumsDto.artistName;
-        music.audioUrl = url;
-        music.coverImgUrl = musicPictureUrl;
-        return music;
-      });
-      album.musics = [...album.musics, ...newMusics];
-    }
-
-    if (updateAlbumsDto.musicsIds) {
-      const currentMusicIds = album.musics.map((music) => music.id);
-      const newMusicIds = updateAlbumsDto.musicsIds.filter(
-        (id) => !currentMusicIds.includes(id),
-      );
-      const allMusicIds = [...currentMusicIds, ...newMusicIds];
-      album.musics = allMusicIds.map((id) => ({ id }) as MusicEntity);
-    }
-
-    if (updateAlbumsDto.authorsIds) {
-      const currentAuthorIds = album.authors.map((author) => author.id);
-      const newAuthorIds = updateAlbumsDto.authorsIds.filter(
-        (id) => !currentAuthorIds.includes(id),
-      );
-      const allAuthorIds = [...currentAuthorIds, ...newAuthorIds];
-      album.authors = allAuthorIds.map((id) => ({ id }) as AuthorEntity);
-    }
-
-    try {
-      await this.albumsRepository.save(album);
-      return album;
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException();
-    }
-  }
+  async update() {}
 
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({
