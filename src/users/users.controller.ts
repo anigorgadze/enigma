@@ -44,7 +44,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
   @Patch(':id/block')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
   }
