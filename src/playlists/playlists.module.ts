@@ -4,6 +4,7 @@ import { PlaylistsController } from './playlists.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlaylistEntity } from './entities/playlist.entity';
 import { PlaylistsRepository } from './playlists.repository';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PlaylistEntity])],

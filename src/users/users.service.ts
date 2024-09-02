@@ -10,9 +10,7 @@ export class UsersService {
   async create(createUsersDto: CreateUsersDto) {
     const userExist = await this.usersRepository.findByEmail(
       createUsersDto.email,
-    )
-
-    
+    );
 
     if (userExist) {
       throw new UnauthorizedException('User exists');
@@ -20,8 +18,12 @@ export class UsersService {
     return this.usersRepository.create(createUsersDto);
   }
 
-  async findByEmail(email:string){
-    return await this.usersRepository.findByEmail(email)
+  async findUserById(id: number) {
+    return await this.usersRepository.findOne(id);
+  }
+
+  async findByEmail(email: string) {
+    return await this.usersRepository.findByEmail(email);
   }
 
   async blockUser(id: number) {
@@ -31,7 +33,6 @@ export class UsersService {
   async unblockUser(id: number) {
     return this.usersRepository.unblockUser(id);
   }
-
 
   findAll() {
     return this.usersRepository.findAll();

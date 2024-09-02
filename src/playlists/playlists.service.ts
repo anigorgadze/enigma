@@ -6,22 +6,9 @@ import { PlaylistsRepository } from './playlists.repository';
 @Injectable()
 export class PlaylistsService {
   constructor(private readonly playlistRepository: PlaylistsRepository) {}
-  create(createPlaylistDto: CreatePlaylistDto) {
-    return this.playlistRepository.create(createPlaylistDto);
-  }
 
-  async getLikedMusicPlaylist(userId: number) {
-    let playlist = await this.playlistRepository.findLikedMusicPlaylist(userId);
-    if (!playlist) {
-      const createPlaylistDto = new CreatePlaylistDto();
-      createPlaylistDto.title = 'Liked Music';
-      createPlaylistDto.userId = userId;
-      playlist =
-        await this.playlistRepository.createLikedMusicPlaylist(
-          createPlaylistDto,
-        );
-    }
-    return playlist;
+  create(createPlaylistDto: CreatePlaylistDto, userId: number) {
+    return this.playlistRepository.create(createPlaylistDto, userId);
   }
 
   findAll() {

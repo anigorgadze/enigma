@@ -12,50 +12,16 @@ export class PlaylistsRepository {
     @InjectRepository(PlaylistEntity)
     private readonly playlistRepository: Repository<PlaylistEntity>,
   ) {}
-  async create(createPlaylistDto: CreatePlaylistDto) {
+  async create(createPlaylistDto: CreatePlaylistDto, userId: number) {
     const newPlaylist = new PlaylistEntity();
     newPlaylist.title = createPlaylistDto.title;
-    newPlaylist.userId = createPlaylistDto.userId;
-    if (createPlaylistDto.musicsIds) {
-      newPlaylist.musics = createPlaylistDto.musicsIds.map(
-        (id) =>
-          ({
-            id,
-          }) as MusicEntity,
-      );
-    }
-    try {
-      await this.playlistRepository.save(newPlaylist);
-      return newPlaylist;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        'Could not create playlist, try again later!',
-      );
-    }
+    newPlaylist.userId = userId;
+
+    await this.playlistRepository.save(newPlaylist);
+
+    return newPlaylist;
   }
 
-  async findLikedMusicPlaylist(userId: number) {
-    return await this.playlistRepository.findOne({
-      where: {
-        userId,
-        isLikedMusicPlaylist: true,
-      },
-    });
-  }
-  async createLikedMusicPlaylist(createPlaylistDto: CreatePlaylistDto) {
-    const newPlaylist = new PlaylistEntity();
-    newPlaylist.title = createPlaylistDto.title;
-    newPlaylist.userId = createPlaylistDto.userId;
-    newPlaylist.isLikedMusicPlaylist = true;
-    try {
-      await this.playlistRepository.save(newPlaylist);
-      return newPlaylist;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        'Could not create liked music playlist, try again later!',
-      );
-    }
-  }
   async findAll() {
     return await this.playlistRepository
       .createQueryBuilder('playlist')
@@ -83,13 +49,19 @@ export class PlaylistsRepository {
 
     playlist.title = updatePlaylistDto.title;
 
-    const playlistMusic = playlist.musics.map((music) => music.id);
+    if (updatePlaylistDto.musicId) {
+      const music = await this.playlistRepository.manager.findOne(MusicEntity, {
+        where: { id: updatePlaylistDto.musicId },
+      });
 
-    updatePlaylistDto.musicsIds.forEach((musicId) => {
-      if (!playlistMusic.includes(musicId)) {
-        playlist.musics.push({ id: musicId } as MusicEntity);
+      if (!music) {
+        throw new InternalServerErrorException('Music not found');
       }
-    });
+
+      if (!playlist.musics.some((m) => m.id === music.id)) {
+        playlist.musics.push(music);
+      }
+    }
 
     try {
       await this.playlistRepository.save(playlist);
@@ -100,7 +72,6 @@ export class PlaylistsRepository {
       );
     }
   }
-
   async remove(id: number) {
     await this.playlistRepository
       .createQueryBuilder('playlist')

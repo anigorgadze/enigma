@@ -24,9 +24,6 @@ export class UsersController {
   roles:Role[]
   authService: any;
   constructor(private readonly usersService: UsersService) {}
-
-
-
   @Post()
   @Public()
   create(@Body() createUsersDto: CreateUsersDto) {
@@ -51,6 +48,7 @@ export class UsersController {
   
   @Patch(':id/unblock')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  
   // @Roles(Role.Admin)
   unblockUser(@Param('id') id: number) {
     return this.usersService.unblockUser(id);
