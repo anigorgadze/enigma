@@ -72,6 +72,36 @@ export class PlaylistsRepository {
       );
     }
   }
+
+  async removeMusicFromPlaylist(createPlaylistDto: CreatePlaylistDto) {
+    const { playlistId, musicId } = createPlaylistDto;
+
+    const playlist = await this.playlistRepository.findOne({
+      where: { id: playlistId },
+      relations: { musics: true },
+    });
+
+    if (!playlist) {
+      throw new InternalServerErrorException('Playlist not found');
+    }
+
+    const musicIndex = playlist.musics.findIndex((m) => m.id === musicId);
+    if (musicIndex === -1) {
+      throw new InternalServerErrorException('Music not found in playlist');
+    }
+
+    playlist.musics.splice(musicIndex, 1);
+
+    try {
+      await this.playlistRepository.save(playlist);
+      return playlist;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Could not remove music from playlist, try again later!',
+      );
+    }
+  }
+
   async remove(id: number) {
     await this.playlistRepository
       .createQueryBuilder('playlist')

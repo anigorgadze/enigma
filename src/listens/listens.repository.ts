@@ -18,43 +18,45 @@ export class ListenRecordsRepository {
       order: { listenedAt: 'DESC' },
     });
 
-    console.log(lastRecord); 
+    if (lastRecord) {
+      const currentTime = new Date();
+      const timeInterval = 60 * 1000;
+      const timeDifference = lastRecord
+        ? currentTime.getTime() - lastRecord.listenedAt.getTime()
+        : Infinity;
 
-    const currentTime = new Date();
-    const timeInterval = 60 * 1000;
-    const timeDifference = lastRecord
-      ? currentTime.getTime() - lastRecord.listenedAt.getTime()
-      : Infinity;
+      if (timeDifference < timeInterval) {
+        throw new Error(
+          `You cannot listen to this music again within ${
+            60 - Math.floor(timeDifference / 1000)
+          } seconds.`,
+        );
+      }
 
-    if (timeDifference < timeInterval) {
-      throw new Error(
-        `You cannot listen to this music again within ${
-          60 - Math.floor(timeDifference / 1000)
-        } seconds.`,
+      const record = new ListenRecordEntity();
+      record.user = { id: userId } as UserEntity;
+      record.music = { id: musicId } as MusicEntity;
+      record.listenedAt = currentTime;
+      await this.listenRecordsRepository.save(record);
+
+      await this.listenRecordsRepository.manager.increment(
+        MusicEntity,
+        { id: musicId },
+        'playCount',
+        1,
       );
+
+      const { password, ...userWithoutPassword } = record.user;
+
+      const result = {
+        ...record,
+        user: userWithoutPassword,
+      };
+
+      return result;
     }
 
-    const record = new ListenRecordEntity();
-    record.user = { id: userId } as UserEntity;
-    record.music = { id: musicId } as MusicEntity;
-    record.listenedAt = currentTime;
-    await this.listenRecordsRepository.save(record);
-
-    await this.listenRecordsRepository.manager.increment(
-      MusicEntity,
-      { id: musicId },
-      'playCount',
-      1,
-    );
-
-    const { password, ...userWithoutPassword } = record.user;
-
-    const result = {
-      ...record,
-      user: userWithoutPassword,
-    };
-
-    return result;
+    throw new Error('Music not found');
   }
 
   async findAll() {

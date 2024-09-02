@@ -11,6 +11,10 @@ export class PlaylistsService {
     return this.playlistRepository.create(createPlaylistDto, userId);
   }
 
+  removeMusicFromPlaylist(createPlaylistDto: CreatePlaylistDto) {
+    return this.playlistRepository.removeMusicFromPlaylist(createPlaylistDto);
+  }
+
   findAll() {
     return this.playlistRepository.findAll();
   }

@@ -44,6 +44,11 @@ export class PlaylistsController {
     return this.playlistsService.update(+id, updatePlaylistDto);
   }
 
+  @Delete('music')
+  removeMusicFromPlaylist(@Body() createPlaylistDto: CreatePlaylistDto) {
+    return this.playlistsService.removeMusicFromPlaylist(createPlaylistDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     return this.playlistsService.remove(+id);
