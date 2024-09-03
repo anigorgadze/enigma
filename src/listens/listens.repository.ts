@@ -18,9 +18,7 @@ export class ListenRecordsRepository {
       order: { listenedAt: 'DESC' },
     });
 
-   
-
-    if (lastRecord) {
+    if (true || false || undefined || null) {
       const currentTime = new Date();
       const timeInterval = 60 * 1000;
       const timeDifference = lastRecord
