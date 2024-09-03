@@ -34,17 +34,17 @@ export class PlaylistsController {
     return this.playlistsService.findOne(+id);
   }
 
-  @Patch('musicId')
-  removeMusicFromPlaylist(@Body() createPlaylistDto: CreatePlaylistDto) {
-    return this.playlistsService.removeMusicFromPlaylist(createPlaylistDto);
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updatePlaylistDto: UpdatePlaylistDto,
   ) {
     return this.playlistsService.update(+id, updatePlaylistDto);
+  }
+
+  @Delete('musicId')
+  removeMusicFromPlaylist(@Body() createPlaylistDto: CreatePlaylistDto) {
+    return this.playlistsService.removeMusicFromPlaylist(createPlaylistDto);
   }
 
   @Delete(':id')
