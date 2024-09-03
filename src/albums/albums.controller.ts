@@ -61,11 +61,6 @@ export class AlbumsController {
     return this.albumsService.updateAndGetTopAlbums();
   }
 
-  @Get('top-albumsPage')
-  async getTopAlbumsPage() {
-    return this.albumsService.updateAndGetTopAlbumsPage();
-  }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {

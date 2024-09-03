@@ -94,22 +94,16 @@ export class AlbumsRepository {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .orderBy('album.totalPlayCount', 'DESC')
-      .take(4)
+      .take(50)
       .getMany();
   }
 
-  async topAlbumsPage() {
-    return await this.albumsRepository
-      .createQueryBuilder('album')
-      .orderBy('album.totalPlayCount', 'DESC')
-      .take(20)
-      .getMany();
-  }
+
   async recentlyAddedAlbums(): Promise<AlbumEntity[]> {
     return await this.albumsRepository
       .createQueryBuilder('album')
       .orderBy('album.createdAt' , 'DESC')
-      .take(8)
+      .take(20)
       .getMany();
   }
 
