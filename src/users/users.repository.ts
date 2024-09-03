@@ -33,6 +33,13 @@ export class UsersRepository {
       .getMany();
   }
 
+  async findMe(id: number) {
+    const user = await this.usersRepository.findOneBy({ id });
+
+    const { password, ...result } = user;
+    return result;
+  }
+
   async findOne(id: number) {
     return await this.usersRepository
       .createQueryBuilder('user')
@@ -51,7 +58,6 @@ export class UsersRepository {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  
   async update(id: number, updateUsersDto: UpdateUsersDto) {
     if (updateUsersDto.password) {
       const salt = await bcrypt.genSalt();

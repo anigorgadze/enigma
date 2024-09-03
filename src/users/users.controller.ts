@@ -7,7 +7,7 @@ import {
   Patch,
   Post,
   UseGuards,
-  Request
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
@@ -19,21 +19,25 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
-@Public()
 export class UsersController {
-  roles:Role[]
+  roles: Role[];
   authService: any;
   constructor(private readonly usersService: UsersService) {}
   @Post()
   @Public()
   create(@Body() createUsersDto: CreateUsersDto) {
     return this.usersService.create(createUsersDto);
-    
   }
 
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findMe(@Request() req) {
+    return this.usersService.findMe(req.user.userId);
   }
 
   @Get(':id')
@@ -45,10 +49,10 @@ export class UsersController {
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
   }
-  
+
   @Patch(':id/unblock')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  
+
   // @Roles(Role.Admin)
   unblockUser(@Param('id') id: number) {
     return this.usersService.unblockUser(id);
