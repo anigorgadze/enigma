@@ -54,7 +54,7 @@ export class MusicsRepository {
       .leftJoinAndSelect('music.authors', 'author')
       .leftJoinAndSelect('music.albums', 'album')
       .orderBy('music.playCount', 'DESC')
-      .take(4)
+      .take(50)
       .getMany();
   }
 
@@ -90,7 +90,7 @@ export class MusicsRepository {
   async recentlyAddedMusics() {
     return await this.musicsRepository
       .createQueryBuilder('music')
-      .orderBy('music.createdAt' , 'DESC')
+      .orderBy('music.createdAt', 'DESC')
       .take(6)
       .getMany();
   }
