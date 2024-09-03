@@ -69,4 +69,9 @@ export class AuthorsService {
   async countSongs(id: number): Promise<number> {
     return this.authorsRepository.countSongs(id);
   }
+
+  async updateAndGetTopAuthorsPage() {
+    await this.authorsRepository.updateAllAuthorsPlayCounts();
+    return this.authorsRepository.topAuthorsPage();
+  }
 }

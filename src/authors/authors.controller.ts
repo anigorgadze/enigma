@@ -55,6 +55,13 @@ export class AuthorsController {
     return this.authorsService.updateAndGetTopAuthors();
   }
 
+
+  @Get('top-authorsPage')
+  async getTopAuthorsPage() {
+    return this.authorsService.updateAndGetTopAuthorsPage();
+  }
+
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.authorsService.findOne(+id);
