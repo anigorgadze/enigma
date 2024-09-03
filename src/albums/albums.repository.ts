@@ -98,6 +98,13 @@ export class AlbumsRepository {
       .getMany();
   }
 
+  async topAlbumsPage() {
+    return await this.albumsRepository
+      .createQueryBuilder('album')
+      .orderBy('album.totalPlayCount', 'DESC')
+      .take(20)
+      .getMany();
+  }
   async recentlyAddedAlbums(): Promise<AlbumEntity[]> {
     return await this.albumsRepository
       .createQueryBuilder('album')
