@@ -12,7 +12,6 @@ import {
 import { PlaylistsService } from './playlists.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
-import { Public } from 'src/auth/public.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('playlists')

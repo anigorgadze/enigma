@@ -19,7 +19,7 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    allowedHeaders: 'Content-Type,Accept',
+    allowedHeaders: 'Content-Type',
   });
   const reflector = app.get(Reflector);
 
