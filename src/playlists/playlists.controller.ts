@@ -16,7 +16,6 @@ import { Public } from 'src/auth/public.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('playlists')
-@Public()
 @UseGuards(JwtAuthGuard)
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}

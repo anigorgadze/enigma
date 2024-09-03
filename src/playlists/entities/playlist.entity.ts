@@ -1,3 +1,4 @@
+import { IsOptional } from 'class-validator';
 import { MusicEntity } from 'src/musics/entities/music.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
@@ -26,6 +27,7 @@ export class PlaylistEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.playlists)
   user: UserEntity;
+
 
   @Column({ nullable: true })
   userId: number;
