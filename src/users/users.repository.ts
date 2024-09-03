@@ -39,7 +39,7 @@ export class UsersRepository {
   async findMe(id: number) {
     const user = await this.usersRepository.findOne({
       where: { id },
-      relations: { playlists: true },
+      relations: { playlists: { musics: true } },
     });
 
     const { password, ...result } = user;
