@@ -10,7 +10,7 @@ import { AuthorsModule } from 'src/authors/authors.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AlbumEntity, MusicEntity]),
+    TypeOrmModule.forFeature([AlbumEntity]),
     FilesModule,
     AuthorsModule,
   ],
