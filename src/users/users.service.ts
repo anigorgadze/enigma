@@ -18,6 +18,10 @@ export class UsersService {
     return this.usersRepository.create(createUsersDto);
   }
 
+  async findMe(id: number) {
+    return this.usersRepository.findMe(id);
+  }
+
   async findUserById(id: number) {
     return await this.usersRepository.findOne(id);
   }
