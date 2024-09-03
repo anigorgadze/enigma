@@ -87,21 +87,15 @@ export class AuthorsRepository {
     }
   }
 
+
   async topAuthors() {
     return await this.authorsRepository
       .createQueryBuilder('author')
       .orderBy('author.totalPlayCount', 'DESC')
-      .take(4)
+      .take(50)
       .getMany();
   }
 
-  async topAuthorsPage() {
-    return await this.authorsRepository
-      .createQueryBuilder('author')
-      .orderBy('author.totalPlayCount', 'DESC')
-      .take(20)
-      .getMany();
-  }
 
   async update() {}
 

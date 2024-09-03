@@ -70,8 +70,4 @@ export class AuthorsService {
     return this.authorsRepository.countSongs(id);
   }
 
-  async updateAndGetTopAuthorsPage() {
-    await this.authorsRepository.updateAllAuthorsPlayCounts();
-    return this.authorsRepository.topAuthorsPage();
-  }
 }
