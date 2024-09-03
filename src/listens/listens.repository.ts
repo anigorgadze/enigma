@@ -18,7 +18,7 @@ export class ListenRecordsRepository {
       order: { listenedAt: 'DESC' },
     });
 
-    if (true || false || undefined || null) {
+    if (musicId) {
       const currentTime = new Date();
       const timeInterval = 60 * 1000;
       const timeDifference = lastRecord
@@ -56,7 +56,7 @@ export class ListenRecordsRepository {
       return result;
     }
 
-    throw new Error('musikaa arali');
+    throw new Error('music not found');
   }
 
   async findAll() {
