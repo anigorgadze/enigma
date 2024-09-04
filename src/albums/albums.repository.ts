@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AlbumEntity } from './entities/album.entity';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
 import { UpdateAlbumsDto } from './dto/update-albums.dto';
@@ -14,7 +14,7 @@ export class AlbumsRepository {
     @InjectRepository(AlbumEntity)
     private albumsRepository: Repository<AlbumEntity>,
     private authorsService: AuthorsService,
-  ) {}
+  ) { }
 
   async create(createAlbumsDto: CreateAlbumsDto, picture: string) {
     const author = await this.authorsService.findAuthorById(
@@ -52,15 +52,19 @@ export class AlbumsRepository {
   }
 
   async findByTitle(search: string) {
-    return await this.albumsRepository
-      .createQueryBuilder('album')
-      .where('album.title LIKE :searchField', {
-        searchField: `%${search}%`,
-      })
-      .getMany();
+    const albums = await this.albumsRepository.find({
+      relations: {
+        musics: true,
+      },
+      where: {
+        title: Like(`%${search}%`),
+      },
+    });
+
+    return albums;
   }
 
-  async update() {}
+  async update() { }
 
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({
@@ -102,7 +106,7 @@ export class AlbumsRepository {
   async recentlyAddedAlbums(): Promise<AlbumEntity[]> {
     return await this.albumsRepository
       .createQueryBuilder('album')
-      .orderBy('album.createdAt' , 'DESC')
+      .orderBy('album.createdAt', 'DESC')
       .take(20)
       .getMany();
   }

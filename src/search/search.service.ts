@@ -9,19 +9,24 @@ export class SearchService {
     private readonly musicsRepository: MusicsRepository,
     private readonly authorsRepository: AuthorsRepository,
     private readonly albumsRepository: AlbumsRepository,
-  ) {}
+  ) { }
 
   async search(search: string) {
-    const musics = await this.musicsRepository.findByTitle(search);
-    const authors = await this.authorsRepository.findByName(search);
-    const albums = await this.albumsRepository.findByTitle(search);
+    try {
+      const musics = await this.musicsRepository.findByTitle(search);
+      const authors = await this.authorsRepository.findByName(search);
+      const albums = await this.albumsRepository.findByTitle(search);
 
-    const results = [
-      ...musics.map((music) => ({ type: 'music', data: music })),
-      ...authors.map((author) => ({ type: 'author', data: author })),
-      ...albums.map((album) => ({ type: 'album', data: album })),
-    ];
+      const results = [
+        ...musics.map((music) => ({ type: 'music', data: music })),
+        ...authors.map((author) => ({ type: 'author', data: author })),
+        ...albums.map((album) => ({ type: 'album', data: album })),
+      ];
 
-    return results;
+      return results;
+    } catch (err) {
+      console.log(err)
+    }
   }
+
 }
