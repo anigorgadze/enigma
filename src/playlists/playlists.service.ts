@@ -23,6 +23,10 @@ export class PlaylistsService {
     return this.playlistRepository.findOne(id);
   }
 
+  addMusicToPlaylist(updatePlaylistDto: UpdatePlaylistDto) {
+    return this.playlistRepository.addMusicToPlaylist(updatePlaylistDto);
+  }
+
   update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
     return this.playlistRepository.update(id, updatePlaylistDto);
   }

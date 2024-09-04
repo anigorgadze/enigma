@@ -73,6 +73,40 @@ export class PlaylistsRepository {
     }
   }
 
+  async addMusicToPlaylist(updatePlaylistDto: UpdatePlaylistDto) {
+    const playlist = await this.playlistRepository.findOne({
+      where: { id: updatePlaylistDto.playlistId },
+      relations: { musics: true },
+    });
+
+    if (!playlist) {
+      throw new InternalServerErrorException('Playlist not found');
+    }
+
+    if (updatePlaylistDto.musicId) {
+      const music = await this.playlistRepository.manager.findOne(MusicEntity, {
+        where: { id: updatePlaylistDto.musicId },
+      });
+
+      if (!music) {
+        throw new InternalServerErrorException('Music not found');
+      }
+
+      if (!playlist.musics.some((m) => m.id === music.id)) {
+        playlist.musics.push(music);
+      }
+    }
+
+    try {
+      await this.playlistRepository.save(playlist);
+      return playlist;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Could not update playlist, try again later!',
+      );
+    }
+  }
+
   async removeMusicFromPlaylist(createPlaylistDto: CreatePlaylistDto) {
     const { playlistId, musicId } = createPlaylistDto;
 
