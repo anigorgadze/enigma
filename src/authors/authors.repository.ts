@@ -46,14 +46,15 @@ export class AuthorsRepository {
     return await this.authorsRepository
       .createQueryBuilder('author')
       .where('author.id = :id', { id })
-      .leftJoinAndSelect('author.musics','musics')
-      .leftJoinAndSelect('author.albums','albums')
+      .leftJoinAndSelect('author.musics', 'musics')
+      .leftJoinAndSelect('author.albums', 'albums')
       .getOne();
   }
 
   async findByName(search: string) {
     return await this.authorsRepository
       .createQueryBuilder('author')
+      .leftJoinAndSelect('author.musics', 'music')
       .where('author.artistName LIKE :searchField', {
         searchField: `%${search}%`,
       })
@@ -87,7 +88,6 @@ export class AuthorsRepository {
     }
   }
 
-
   async topAuthors() {
     return await this.authorsRepository
       .createQueryBuilder('author')
@@ -96,13 +96,12 @@ export class AuthorsRepository {
       .getMany();
   }
 
-
   async update() {}
 
   async recentlyAddedAuthors() {
     return await this.authorsRepository
       .createQueryBuilder('author')
-      .orderBy('author.createdAt' , 'DESC')
+      .orderBy('author.createdAt', 'DESC')
       .take(8)
       .getMany();
   }
