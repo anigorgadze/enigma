@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { AuthorEntity } from './entities/author.entity';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 
@@ -52,13 +52,18 @@ export class AuthorsRepository {
   }
 
   async findByName(search: string) {
-    return await this.authorsRepository
-      .createQueryBuilder('author')
-      .leftJoinAndSelect('author.musics', 'music')
-      .where('author.artistName LIKE :searchField', {
-        searchField: `%${search}%`,
-      })
-      .getMany();
+    const authors = await this.authorsRepository.find({
+      relations: {
+        albums: {
+          musics: true,
+        },
+      },
+      where: {
+        artistName: Like(`%${search}%`),
+      },
+    });
+
+    return authors;
   }
 
   async updateAllAuthorsPlayCounts() {

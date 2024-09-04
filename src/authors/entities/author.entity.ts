@@ -29,7 +29,7 @@ export class AuthorEntity {
   @Column({ nullable: true })
   releaseDate: string;
 
-  @Column({type: 'varchar'})
+  @Column({ type: 'varchar' })
   coverImgUrl: string;
 
   @Column({ nullable: true })
@@ -45,7 +45,7 @@ export class AuthorEntity {
   @JoinTable()
   musics: MusicEntity[];
 
-  @ManyToMany(() => AlbumEntity, (albums) => albums.authors)
+  @ManyToMany(() => AlbumEntity, (albums) => albums.authors, { cascade: true })
   albums: AlbumEntity[];
 
   @CreateDateColumn()
@@ -56,6 +56,4 @@ export class AuthorEntity {
 
   @DeleteDateColumn()
   deletedAt: string;
-
-
 }

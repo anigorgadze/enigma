@@ -37,7 +37,7 @@ export class AlbumEntity {
   @JoinTable()
   musics: MusicEntity[];
 
-  @ManyToMany(() => AuthorEntity, (author) => author.albums, { cascade: true })
+  @ManyToMany(() => AuthorEntity, (author) => author.albums)
   @JoinTable()
   authors: AuthorEntity[];
 
