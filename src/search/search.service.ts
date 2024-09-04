@@ -9,7 +9,7 @@ export class SearchService {
     private readonly musicsRepository: MusicsRepository,
     private readonly authorsRepository: AuthorsRepository,
     private readonly albumsRepository: AlbumsRepository,
-  ) { }
+  ) {}
 
   async search(search: string) {
     try {
