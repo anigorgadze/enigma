@@ -24,9 +24,6 @@ export class UserEntity {
   @Column()
   password: string;
 
-  @Column()
-  imgUrl: string;
-
   @Column({ default: false, type: 'boolean' })
   isAdmin: boolean;
 
