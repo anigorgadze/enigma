@@ -19,7 +19,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
-@Public()
 export class UsersController {
   roles: Role[];
   authService: any;
@@ -41,6 +40,7 @@ export class UsersController {
     return this.usersService.findMe(req.user.userId);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
