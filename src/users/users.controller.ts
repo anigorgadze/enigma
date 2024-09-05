@@ -29,6 +29,7 @@ export class UsersController {
     return this.usersService.create(createUsersDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.usersService.findAll();
