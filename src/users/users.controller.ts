@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
+@Public()
 export class UsersController {
   roles: Role[];
   authService: any;
@@ -45,7 +46,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
   @Patch(':id/block')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
   }
