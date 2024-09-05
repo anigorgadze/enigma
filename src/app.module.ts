@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
 import { ListenRecordsModule } from './listens/listens.module';
 import { LikedMusicModule } from './likedMusics/likedmusics.module';
+import { TopchartsModule } from './topcharts/topcharts.module';
 
 
 
@@ -41,7 +42,8 @@ import { LikedMusicModule } from './likedMusics/likedmusics.module';
     FilesModule,
     AuthModule,
     ListenRecordsModule,
-    LikedMusicModule
+    LikedMusicModule,
+    TopchartsModule
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard, Reflector, JwtAuthGuard],
