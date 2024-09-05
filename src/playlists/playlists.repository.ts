@@ -1,10 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistEntity } from './entities/playlist.entity';
 import { Repository } from 'typeorm';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { MusicEntity } from 'src/musics/entities/music.entity';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class PlaylistsRepository {
@@ -44,7 +45,7 @@ export class PlaylistsRepository {
     });
 
     if (!playlist) {
-      throw new InternalServerErrorException('Playlist not found');
+      throw new NotFoundException('Playlist not found');
     }
 
     playlist.title = updatePlaylistDto.title;
