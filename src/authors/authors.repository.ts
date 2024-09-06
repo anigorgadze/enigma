@@ -48,6 +48,7 @@ export class AuthorsRepository {
       .where('author.id = :id', { id })
       .leftJoinAndSelect('author.musics', 'musics')
       .leftJoinAndSelect('author.albums', 'albums')
+      .leftJoinAndSelect('albums.musics', 'albumMusics')
       .getOne();
   }
 
