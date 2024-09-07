@@ -84,8 +84,20 @@ export class MusicsRepository {
       .where('music.id = :id', { id })
       .getOne();
   }
-
-  async update() {}
+  async update(id: number, coverImgUrl: string) {
+    const author = await this.musicsRepository.findOne({ where: { id } });
+    if (!author) {
+      throw new InternalServerErrorException('Music not found');
+    }
+  
+    author.coverImgUrl = coverImgUrl;
+  
+    try {
+      return await this.musicsRepository.save(author);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update music image');
+    }
+  }
 
   async recentlyAddedMusics() {
     return await this.musicsRepository

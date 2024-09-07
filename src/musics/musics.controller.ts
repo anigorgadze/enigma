@@ -73,9 +73,18 @@ export class MusicsController {
   findOne(@Param('id') id: string) {
     return this.musicsService.findOne(+id);
   }
-
   @Patch(':id')
-  update() {}
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  async updateAuthorImage(
+    @Param('id') id: string,
+    @UploadedFiles() files: Files,
+  ) {
+    const { picture } = files;
+    if (!picture) {
+      throw new InternalServerErrorException('Picture file is missing');
+    }
+    return await this.musicsService.update(+id, picture[0]);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

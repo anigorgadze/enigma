@@ -64,7 +64,21 @@ export class AlbumsRepository {
     return albums;
   }
 
-  async update() { }
+  async update(id: number, coverImgUrl: string) {
+    const author = await this.albumsRepository.findOne({ where: { id } });
+    if (!author) {
+      throw new InternalServerErrorException('Album not found');
+    }
+  
+    author.coverImgUrl = coverImgUrl;
+  
+    try {
+      return await this.albumsRepository.save(author);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update album image');
+    }
+  }
+
 
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({

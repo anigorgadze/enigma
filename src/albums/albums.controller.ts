@@ -68,7 +68,17 @@ export class AlbumsController {
   }
 
   @Patch(':id')
-  update() {}
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  async updateAuthorImage(
+    @Param('id') id: string,
+    @UploadedFiles() files: Files,
+  ) {
+    const { picture } = files;
+    if (!picture) {
+      throw new InternalServerErrorException('Picture file is missing');
+    }
+    return await this.albumsService.update(+id, picture[0]);
+  }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')

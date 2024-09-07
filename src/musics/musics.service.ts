@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { MusicsRepository } from './musics.repository';
 import { CreateMusicsDto } from './dto/create-musics.dto';
 import { UpdateMusicsDto } from './dto/update-musics.dto';
@@ -40,7 +40,18 @@ export class MusicsService {
     return this.musicsRepository.findOne(id);
   }
 
-  async update() {}
+  async update(id: number, picture: Express.Multer.File) {
+    const { url: coverImgUrl } = await this.filesService.uploadFile(
+      picture,
+      'Images',
+    );
+  
+    if (!coverImgUrl) {
+      throw new InternalServerErrorException('Failed to upload cover image');
+    }
+  
+    return await this.musicsRepository.update(id, coverImgUrl);
+  }
 
   remove(id: number) {
     return this.musicsRepository.remove(id);
