@@ -60,8 +60,20 @@ export class AuthorsController {
     return await this.authorsService.findOne(+id);
   }
 
+ 
   @Patch(':id')
-  async update() {}
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  async updateAuthorImage(
+    @Param('id') id: string,
+    @UploadedFiles() files: Files,
+  ) {
+    const { picture } = files;
+    if (!picture) {
+      throw new InternalServerErrorException('Picture file is missing');
+    }
+    return await this.authorsService.update(+id, picture[0]);
+  }
+
 
   @Delete(':id')
   async remove(@Param('id') id: string) {

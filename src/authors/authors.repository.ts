@@ -102,7 +102,24 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  async update() {}
+  // async update() {}
+
+  async update(id: number, coverImgUrl: string) {
+    const author = await this.authorsRepository.findOne({ where: { id } });
+    if (!author) {
+      throw new InternalServerErrorException('Author not found');
+    }
+  
+    author.coverImgUrl = coverImgUrl;
+  
+    try {
+      return await this.authorsRepository.save(author);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update author image');
+    }
+  }
+
+  
 
   async recentlyAddedAuthors() {
     return await this.authorsRepository

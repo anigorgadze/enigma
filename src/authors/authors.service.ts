@@ -42,7 +42,20 @@ export class AuthorsService {
     return await this.authorsRepository.findOne(id);
   }
 
-  async update() {}
+  // async update() {}
+
+  async update(id: number, picture: Express.Multer.File) {
+    const { url: coverImgUrl } = await this.filesService.uploadFile(
+      picture,
+      'Images',
+    );
+  
+    if (!coverImgUrl) {
+      throw new InternalServerErrorException('Failed to upload cover image');
+    }
+  
+    return await this.authorsRepository.update(id, coverImgUrl);
+  }
 
   async getRecentlyAddedAuthors() {
     return await this.authorsRepository.recentlyAddedAuthors();
