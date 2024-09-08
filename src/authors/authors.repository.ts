@@ -29,17 +29,20 @@ export class AuthorsRepository {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<AuthorEntity[]> {
     const authors = await this.authorsRepository.find({
-      relations: ['musics', 'albums'],
+      relations: ['albums', 'albums.musics'],
     });
     for (const author of authors) {
-      const musicsLength = author.musics.length;
-      author.musicsCount = musicsLength;
-
+      let musicsCount = 0;
+      for (const album of author.albums) {
+        musicsCount += album.musics.length;
+      }
+      author.musicsCount = musicsCount;
       await this.authorsRepository.save(author);
-      return authors;
     }
+
+    return authors;
   }
 
   async findOne(id: number) {
@@ -148,6 +151,20 @@ export class AuthorsRepository {
       throw new InternalServerErrorException('Author not found');
     }
 
-    return Number(songCount.songCount);
+    const author = await this.authorsRepository.findOne({
+      where: { id },
+    });
+
+    if (!author) {
+      throw new InternalServerErrorException('Author not found');
+    }
+
+    author.musicsCount = Number(songCount.songCount);
+
+    try {
+      return await this.authorsRepository.save(author);
+    } catch (err) {
+      throw new InternalServerErrorException('Failed to update musics count');
+    }
   }
 }
