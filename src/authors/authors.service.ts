@@ -79,7 +79,7 @@ export class AuthorsService {
     return this.authorsRepository.topAuthors();
   }
 
-  async countSongs(id: number): Promise<number> {
+  async countSongs(id: number) {
     return this.authorsRepository.countSongs(id);
   }
 

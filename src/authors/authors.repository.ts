@@ -109,17 +109,15 @@ export class AuthorsRepository {
     if (!author) {
       throw new InternalServerErrorException('Author not found');
     }
-  
+
     author.coverImgUrl = coverImgUrl;
-  
+
     try {
       return await this.authorsRepository.save(author);
     } catch (err) {
       throw new InternalServerErrorException('Failed to update author image');
     }
   }
-
-  
 
   async recentlyAddedAuthors() {
     return await this.authorsRepository
@@ -137,17 +135,19 @@ export class AuthorsRepository {
       .where('author.id = :id', { id })
       .getOne();
   }
-  async countSongs(id: number): Promise<number> {
-    const author = await this.authorsRepository
+  async countSongs(id: number) {
+    const songCount = await this.authorsRepository
       .createQueryBuilder('author')
-      .leftJoinAndSelect('author.musics', 'authorMusics')
+      .leftJoin('author.albums', 'albums')
+      .leftJoin('albums.musics', 'musics')
       .where('author.id = :id', { id })
-      .getOne();
+      .select('COUNT(musics.id)', 'songCount')
+      .getRawOne();
 
-    if (!author) {
+    if (!songCount) {
       throw new InternalServerErrorException('Author not found');
     }
 
-    return author.musics.length;
+    return Number(songCount.songCount);
   }
 }
