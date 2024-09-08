@@ -49,18 +49,17 @@ export class AuthorsService {
       picture,
       'Images',
     );
-  
+
     if (!coverImgUrl) {
       throw new InternalServerErrorException('Failed to upload cover image');
     }
-  
+
     return await this.authorsRepository.update(id, coverImgUrl);
   }
 
   async getRecentlyAddedAuthors() {
     return await this.authorsRepository.recentlyAddedAuthors();
   }
-
 
   async findAuthorById(id: number): Promise<AuthorEntity> {
     const author = await this.authorsRepository.findOne(id);
@@ -78,9 +77,4 @@ export class AuthorsService {
     await this.authorsRepository.updateAllAuthorsPlayCounts();
     return this.authorsRepository.topAuthors();
   }
-
-  async countSongs(id: number) {
-    return this.authorsRepository.countSongs(id);
-  }
-
 }

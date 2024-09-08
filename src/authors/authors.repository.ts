@@ -138,33 +138,5 @@ export class AuthorsRepository {
       .where('author.id = :id', { id })
       .getOne();
   }
-  async countSongs(id: number) {
-    const songCount = await this.authorsRepository
-      .createQueryBuilder('author')
-      .leftJoin('author.albums', 'albums')
-      .leftJoin('albums.musics', 'musics')
-      .where('author.id = :id', { id })
-      .select('COUNT(musics.id)', 'songCount')
-      .getRawOne();
 
-    if (!songCount) {
-      throw new InternalServerErrorException('Author not found');
-    }
-
-    const author = await this.authorsRepository.findOne({
-      where: { id },
-    });
-
-    if (!author) {
-      throw new InternalServerErrorException('Author not found');
-    }
-
-    author.musicsCount = Number(songCount.songCount);
-
-    try {
-      return await this.authorsRepository.save(author);
-    } catch (err) {
-      throw new InternalServerErrorException('Failed to update musics count');
-    }
-  }
 }

@@ -45,10 +45,6 @@ export class AuthorsController {
   async getRecentlyAddedAuthors() {
     return this.authorsService.getRecentlyAddedAuthors();
   }
-  @Get(':id/songs-count')
-  async countSongs(@Param('id') id: string) {
-    return await this.authorsService.countSongs(+id);
-  }
 
   @Get('top-authors')
   async getTopAuthors() {
@@ -60,7 +56,6 @@ export class AuthorsController {
     return await this.authorsService.findOne(+id);
   }
 
- 
   @Patch(':id')
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
   async updateAuthorImage(
@@ -73,7 +68,6 @@ export class AuthorsController {
     }
     return await this.authorsService.update(+id, picture[0]);
   }
-
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
