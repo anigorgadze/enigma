@@ -42,6 +42,9 @@ export class UsersRepository {
       relations: { playlists: { musics: true } },
     });
 
+    console.log(id)
+    console.log(user);
+
     const { password, ...result } = user;
     return result;
   }

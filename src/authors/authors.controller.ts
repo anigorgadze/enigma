@@ -8,19 +8,23 @@ import {
   Patch,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
 import { Public } from 'src/auth/public.decorator';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 interface Files {
   picture?: Express.Multer.File[];
 }
 
 @Controller('authors')
-@Public()
+@UseGuards(RolesGuard)
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
@@ -37,20 +41,24 @@ export class AuthorsController {
     return await this.authorsService.create(createAuthorsDto, picture[0]);
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get()
   async findAll() {
     return await this.authorsService.findAll();
   }
+
   @Get('recent')
   async getRecentlyAddedAuthors() {
     return this.authorsService.getRecentlyAddedAuthors();
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get('top-authors')
   async getTopAuthors() {
     return this.authorsService.updateAndGetTopAuthors();
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.authorsService.findOne(+id);

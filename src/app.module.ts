@@ -12,7 +12,6 @@ import { FilesModule } from './files/files.module';
 import 'dotenv/config';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, Reflector } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
 import { ListenRecordsModule } from './listens/listens.module';
 import { LikedMusicModule } from './likedMusics/likedmusics.module';
@@ -46,6 +45,6 @@ import { TopchartsModule } from './topcharts/topcharts.module';
     TopchartsModule
   ],
   controllers: [AppController],
-  providers: [AppService, RolesGuard, Reflector, JwtAuthGuard],
+  providers: [AppService, RolesGuard, Reflector],
 })
 export class AppModule {}
