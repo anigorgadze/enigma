@@ -16,6 +16,8 @@ export class TopchartsController {
       { name: 'picture', maxCount: 1 },
     ]),
   )
+
+  
   create(
     @UploadedFiles() files: { picture?: Express.Multer.File[] },
     @Body() createTopchartDto: CreateTopchartDto,
