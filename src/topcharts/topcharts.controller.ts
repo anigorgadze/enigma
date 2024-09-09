@@ -25,7 +25,7 @@ import { Role } from 'src/auth/role.enum';
 export class TopchartsController {
   constructor(private readonly topchartsService: TopchartsService) {}
 
-  @Roles(Role.Admin, Role.User)
+
   @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
   create(

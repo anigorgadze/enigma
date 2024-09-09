@@ -18,13 +18,14 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/auth/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 interface Files {
   picture?: Express.Multer.File[];
 }
 
 @Controller('authors')
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
