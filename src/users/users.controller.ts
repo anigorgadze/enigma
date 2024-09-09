@@ -11,51 +11,45 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
-import { Public } from 'src/auth/public.decorator';
 import { Role } from 'src/auth/role.enum';
-import { Roles } from 'src/auth/roles.decorator';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(RolesGuard)
 @Controller('users')
 export class UsersController {
   roles: Role[];
   authService: any;
   constructor(private readonly usersService: UsersService) {}
   @Post()
-  @Public()
   create(@Body() createUsersDto: CreateUsersDto) {
     return this.usersService.create(createUsersDto);
   }
 
-  @Public()
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard)
+  @Roles(Role.User, Role.Admin)
   @Get('me')
   findMe(@Request() req) {
-    return this.usersService.findMe(req.user.userId);
+    return this.usersService.findMe(req.user.sub);
   }
 
-  @Public()
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }
   @Patch(':id/block')
-  @UseGuards(JwtAuthGuard)
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
   }
 
   @Patch(':id/unblock')
-  @UseGuards(JwtAuthGuard, RolesGuard)
 
-  // @Roles(Role.Admin)
   unblockUser(@Param('id') id: number) {
     return this.usersService.unblockUser(id);
   }

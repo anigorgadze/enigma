@@ -10,26 +10,21 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-  Request,
-  Query,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumsDto } from './dto/create-albums.dto';
-import { UpdateAlbumsDto } from './dto/update-albums.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { Public } from 'src/auth/public.decorator';
-import { MusicEntity } from 'src/musics/entities/music.entity';
+import { Role } from 'src/auth/role.enum';
+import { Roles } from 'src/auth/roles.decorator';
 
 interface Files {
   picture?: Express.Multer.File[];
   audio?: Express.Multer.File[];
   musicPicture?: Express.Multer.File[];
 }
-
 @Controller('albums')
-@Public()
+@UseGuards(RolesGuard)
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
@@ -47,21 +42,24 @@ export class AlbumsController {
     return this.albumsService.create(createAlbumsDto, picture[0]);
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get()
   findAll() {
     return this.albumsService.findAll();
   }
+
   @Get('recent')
   async getRecentlyAddedAlbums() {
     return this.albumsService.getRecentlyAddedAlbums();
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get('top-albums')
   async getTopAlbums() {
     return this.albumsService.updateAndGetTopAlbums();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.albumsService.findOne(+id);
@@ -80,7 +78,6 @@ export class AlbumsController {
     return await this.albumsService.update(+id, picture[0]);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.albumsService.remove(+id);

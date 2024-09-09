@@ -14,8 +14,10 @@ import {
 import { MusicsService } from './musics.service';
 import { CreateMusicsDto } from './dto/create-musics.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Public } from 'src/auth/public.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 interface Files {
   picture?: Express.Multer.File[];
@@ -23,11 +25,10 @@ interface Files {
 }
 
 @Controller('musics')
-@Public()
+@UseGuards(RolesGuard)
 export class MusicsController {
   constructor(private readonly musicsService: MusicsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -46,29 +47,30 @@ export class MusicsController {
     return this.musicsService.create(createMusicsDto, picture[0], audio[0]);
   }
 
-  @Public()
+  @Roles(Role.Admin, Role.User)
   @Get()
   findAll() {
     return this.musicsService.findAll();
   }
-  
+
   @Get('recent')
   async getRecentlyAddedMusics() {
     return this.musicsService.getRecentlyAddedMusics();
   }
 
-
+  @Roles(Role.Admin, Role.User)
   @Get('shuffle')
   async shuffleMusics() {
     return this.musicsService.shuffleMusics();
   }
 
-  @Public()
+  @Roles(Role.Admin, Role.User)
   @Get('tophits')
   topHits() {
     return this.musicsService.topHits();
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.musicsService.findOne(+id);

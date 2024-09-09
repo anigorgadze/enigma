@@ -12,13 +12,16 @@ import {
 import { PlaylistsService } from './playlists.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { UpdatePlaylistDto } from './dto/update-playlist.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('playlists')
-@UseGuards(JwtAuthGuard)
+@UseGuards(RolesGuard)
 export class PlaylistsController {
   constructor(private readonly playlistsService: PlaylistsService) {}
 
+  @Roles(Role.Admin, Role.User)
   @Post()
   create(@Body() createPlaylistDto: CreatePlaylistDto, @Request() req) {
     return this.playlistsService.create(createPlaylistDto, req.user.userId);
@@ -34,6 +37,7 @@ export class PlaylistsController {
     return this.playlistsService.findOne(+id);
   }
 
+  @Roles(Role.Admin, Role.User)
   @Patch('addToPlaylist')
   addMusicToPlaylist(@Body() updatePlaylistDto: UpdatePlaylistDto) {
     return this.playlistsService.addMusicToPlaylist(updatePlaylistDto);
@@ -47,6 +51,7 @@ export class PlaylistsController {
     return this.playlistsService.update(+id, updatePlaylistDto);
   }
 
+  @Roles(Role.Admin, Role.User)
   @Delete('musicId')
   removeMusicFromPlaylist(@Body() createPlaylistDto: CreatePlaylistDto) {
     return this.playlistsService.removeMusicFromPlaylist(createPlaylistDto);
