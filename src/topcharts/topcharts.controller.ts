@@ -27,7 +27,11 @@ export class TopchartsController {
 
 
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'picture', maxCount: 1 }]))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+    ]),
+  )
   create(
     @UploadedFiles() files: { picture?: Express.Multer.File[] },
     @Body() createTopchartDto: CreateTopchartDto,
