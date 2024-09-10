@@ -14,7 +14,7 @@ export class AlbumsRepository {
     @InjectRepository(AlbumEntity)
     private albumsRepository: Repository<AlbumEntity>,
     private authorsService: AuthorsService,
-  ) { }
+  ) {}
 
   async create(createAlbumsDto: CreateAlbumsDto, picture: string) {
     const author = await this.authorsService.findAuthorById(
@@ -69,16 +69,15 @@ export class AlbumsRepository {
     if (!author) {
       throw new InternalServerErrorException('Album not found');
     }
-  
+
     author.coverImgUrl = coverImgUrl;
-  
+
     try {
       return await this.albumsRepository.save(author);
     } catch (err) {
       throw new InternalServerErrorException('Failed to update album image');
     }
   }
-
 
   async updateAllAlbumsPlayCounts(): Promise<void> {
     const albums = await this.albumsRepository.find({
@@ -101,7 +100,6 @@ export class AlbumsRepository {
     try {
       await Promise.all(updatePromises);
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException(
         'Failed to update play counts, please try again later!',
       );
@@ -116,7 +114,6 @@ export class AlbumsRepository {
       .getMany();
   }
 
-
   async recentlyAddedAlbums(): Promise<AlbumEntity[]> {
     return await this.albumsRepository
       .createQueryBuilder('album')
@@ -124,7 +121,6 @@ export class AlbumsRepository {
       .take(20)
       .getMany();
   }
-
 
   async remove(id: number) {
     await this.albumsRepository

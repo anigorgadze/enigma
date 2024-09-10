@@ -67,22 +67,26 @@ export class AuthorsRepository {
 
   async updateAllAuthorsPlayCounts() {
     const authors = await this.authorsRepository.find({
-      relations: ['musics'],
+      relations: ['albums'],
     });
 
     const updatePromises = authors.map(async (author) => {
-      const totalPlayCount = author.musics.reduce(
-        (sum, music) => sum + music.playCount,
-        0,
-      );
-      const numberOfMusics = author.musics.length;
+      if (!author.albums || author.albums.length === 0) {
+        author.totalPlayCount = 0;
+        return this.authorsRepository.save(author);
+      }
+
+      const totalPlayCount = author.albums.reduce((sum, album) => {
+        return sum + album.totalPlayCount;
+      }, 0);
+
+      const numberOfAlbums = author.albums.length;
 
       author.totalPlayCount =
-        numberOfMusics > 0 ? totalPlayCount / numberOfMusics : 0;
+        numberOfAlbums > 0 ? totalPlayCount / numberOfAlbums : 0;
 
       return this.authorsRepository.save(author);
     });
-
     try {
       await Promise.all(updatePromises);
     } catch (err) {
