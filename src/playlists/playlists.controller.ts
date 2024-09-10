@@ -24,7 +24,7 @@ export class PlaylistsController {
   @Roles(Role.Admin, Role.User)
   @Post()
   create(@Body() createPlaylistDto: CreatePlaylistDto, @Request() req) {
-    return this.playlistsService.create(createPlaylistDto, req.user.userId);
+    return this.playlistsService.create(createPlaylistDto, req.user.sub);
   }
 
   @Get()
