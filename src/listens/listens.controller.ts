@@ -26,7 +26,7 @@ export class ListenRecordsController {
     const { musicId } = createListenRecordDto;
 
     try {
-      return await this.listenRecordsService.create(req.user.userId, musicId);
+      return await this.listenRecordsService.create(req.user.sub, musicId);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
