@@ -30,17 +30,12 @@ export class AuthorsRepository {
   }
 
   async findAll(): Promise<AuthorEntity[]> {
-    const authors = await this.authorsRepository.find({
-      relations: ['albums', 'albums.musics'],
-    });
-    for (const author of authors) {
-      let musicsCount = 0;
-      for (const album of author.albums) {
-        musicsCount += album.musics.length;
-      }
-      author.musicsCount = musicsCount;
-      await this.authorsRepository.save(author);
-    }
+    const authors = await this.authorsRepository
+      .createQueryBuilder('author')
+      .leftJoinAndSelect('author.albums', 'albums')
+      .leftJoinAndSelect('albums.musics', 'musics')
+      .loadRelationCountAndMap('author.musicsCount', 'albums.musics')
+      .getMany();
 
     return authors;
   }
@@ -138,5 +133,4 @@ export class AuthorsRepository {
       .where('author.id = :id', { id })
       .getOne();
   }
-
 }
