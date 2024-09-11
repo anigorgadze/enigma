@@ -15,14 +15,15 @@ import { Role } from 'src/auth/role.enum';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/auth/public.decorator';
 
-@UseGuards(RolesGuard)
+
 @Controller('users')
 export class UsersController {
   roles: Role[];
   authService: any;
   constructor(private readonly usersService: UsersService) {}
-  
+  @Public()
   @Post()
   create(@Body() createUsersDto: CreateUsersDto) {
     return this.usersService.create(createUsersDto);
@@ -50,7 +51,6 @@ export class UsersController {
   }
 
   @Patch(':id/unblock')
-
   unblockUser(@Param('id') id: number) {
     return this.usersService.unblockUser(id);
   }

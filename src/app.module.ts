@@ -14,10 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
 import { ListenRecordsModule } from './listens/listens.module';
-import { LikedMusicModule } from './likedMusics/likedmusics.module';
 import { TopchartsModule } from './topcharts/topcharts.module';
-
-
 
 @Module({
   imports: [
@@ -34,15 +31,13 @@ import { TopchartsModule } from './topcharts/topcharts.module';
       database: process.env.MYSQL_NAME || 'enigma',
       autoLoadEntities: true,
       synchronize: true,
-    
     }),
     SearchModule,
     PlaylistsModule,
     FilesModule,
     AuthModule,
     ListenRecordsModule,
-    LikedMusicModule,
-    TopchartsModule
+    TopchartsModule,
   ],
   controllers: [AppController],
   providers: [AppService, RolesGuard, Reflector],
