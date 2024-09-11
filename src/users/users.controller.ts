@@ -12,11 +12,9 @@ import {
 import { UsersService } from './users.service';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { Role } from 'src/auth/role.enum';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Public } from 'src/auth/public.decorator';
-
 
 @Controller('users')
 export class UsersController {
@@ -41,10 +39,12 @@ export class UsersController {
     return this.usersService.findMe(req.user.sub);
   }
 
+  @Roles(Role.User, Role.Admin)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }
+
   @Patch(':id/block')
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
