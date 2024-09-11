@@ -12,7 +12,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
-import { LikedMusicEntity } from 'src/likedMusics/entities/likedmusics.entity';
 
 @Entity({ name: 'music' })
 export class MusicEntity {
@@ -22,8 +21,8 @@ export class MusicEntity {
   @Column({ type: 'varchar' })
   title: string;
 
-  @Column({type:'varchar'})
-  artistName:string
+  @Column({ type: 'varchar' })
+  artistName: string;
 
   @Column({ type: 'varchar' })
   coverImgUrl: string;
@@ -45,9 +44,6 @@ export class MusicEntity {
 
   @ManyToMany(() => PlaylistEntity, (playlist) => playlist.musics)
   playlist: PlaylistEntity[];
-  
-  @OneToMany(() => LikedMusicEntity, (likedMusic) => likedMusic.music)
-  likedByUsers: LikedMusicEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -57,5 +53,4 @@ export class MusicEntity {
 
   @DeleteDateColumn()
   deletedAt: Date;
-
 }

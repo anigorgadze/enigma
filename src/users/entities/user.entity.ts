@@ -1,4 +1,3 @@
-import { LikedMusicEntity } from 'src/likedMusics/entities/likedmusics.entity';
 import { ListenRecordEntity } from 'src/listens/entities/listen.entity';
 import { PlaylistEntity } from 'src/playlists/entities/playlist.entity';
 import {
@@ -6,8 +5,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,7 +24,7 @@ export class UserEntity {
   @Column({ default: false, type: 'boolean' })
   isAdmin: boolean;
 
-  @Column({ default: false  , type: 'boolean'})
+  @Column({ default: false, type: 'boolean' })
   blocked: boolean;
 
   @OneToMany(() => PlaylistEntity, (playlist) => playlist.user)
@@ -35,11 +32,7 @@ export class UserEntity {
 
   @OneToMany(() => ListenRecordEntity, (listens) => listens.user)
   listenRecords: ListenRecordEntity[];
-  
-  @OneToMany(() => LikedMusicEntity, (likedMusic) => likedMusic.user)
-  likedMusics: LikedMusicEntity[];
 
-  
   @CreateDateColumn()
   createdAt: Date;
 
