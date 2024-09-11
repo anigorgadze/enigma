@@ -32,6 +32,7 @@ export class PlaylistsController {
     return this.playlistsService.findAll();
   }
 
+  @Roles(Role.Admin, Role.User)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.playlistsService.findOne(+id);
