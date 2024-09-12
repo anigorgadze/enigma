@@ -44,6 +44,8 @@ export class PlaylistsController {
     return this.playlistsService.addMusicToPlaylist(updatePlaylistDto);
   }
 
+  
+  @Roles(Role.Admin, Role.User)
   @Patch(':id')
   update(
     @Param('id') id: string,
