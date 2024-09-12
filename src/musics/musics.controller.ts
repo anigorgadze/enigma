@@ -53,6 +53,12 @@ export class MusicsController {
     return this.musicsService.findAll();
   }
 
+  @Roles(Role.Admin, Role.User)
+  @Get('tophits/week')
+  getTopHitsOfTheWeek() {
+    return this.musicsService.getTopHitsOfTheWeek();
+  }
+
   @Get('recent')
   async getRecentlyAddedMusics() {
     return this.musicsService.getRecentlyAddedMusics();

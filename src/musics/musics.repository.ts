@@ -58,6 +58,31 @@ export class MusicsRepository {
       .getMany();
   }
 
+  async topHitsOfTheWeek() {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    try {
+      return await this.musicsRepository
+        .createQueryBuilder('music')
+        .leftJoin('music.listenRecords', 'listenRecord')
+        .where('listenRecord.listenedAt >= :oneWeekAgo', { oneWeekAgo })
+        .addSelect('music.title', 'title')
+        .addSelect('music.artistName', 'artistName')
+        .addSelect('music.coverImgUrl', 'coverImgUrl')
+        .addSelect('music.audioUrl', 'audioUrl')
+        .addSelect('COUNT(listenRecord.id)', 'listenCount')
+        .groupBy('music.id')
+        .orderBy('listenCount', 'DESC')
+        .take(50)
+        .getRawMany();
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Failed to get top hits of the week',
+      );
+    }
+  }
+
   async listensCounter(music: MusicEntity) {
     try {
       return await this.musicsRepository.save(music);
@@ -89,9 +114,9 @@ export class MusicsRepository {
     if (!author) {
       throw new InternalServerErrorException('Music not found');
     }
-  
+
     author.coverImgUrl = coverImgUrl;
-  
+
     try {
       return await this.musicsRepository.save(author);
     } catch (err) {

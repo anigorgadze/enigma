@@ -36,6 +36,10 @@ export class MusicsService {
     return this.musicsRepository.topHits();
   }
 
+  async getTopHitsOfTheWeek() {
+    return this.musicsRepository.topHitsOfTheWeek();
+  }
+
   findOne(id: number) {
     return this.musicsRepository.findOne(id);
   }
@@ -45,11 +49,11 @@ export class MusicsService {
       picture,
       'Images',
     );
-  
+
     if (!coverImgUrl) {
       throw new InternalServerErrorException('Failed to upload cover image');
     }
-  
+
     return await this.musicsRepository.update(id, coverImgUrl);
   }
 
