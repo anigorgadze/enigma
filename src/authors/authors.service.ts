@@ -74,8 +74,6 @@ export class AuthorsService {
       throw new NotFoundException('Author not found');
     }
 
-    await this.authorsRepository.remove(id);
-
     return await this.authorsRepository.remove(id);
   }
 

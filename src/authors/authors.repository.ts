@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { AuthorEntity } from './entities/author.entity';
 import { CreateAuthorsDto } from './dto/create-authors.dto';
+import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { MusicEntity } from 'src/musics/entities/music.entity';
 
 @Injectable()
 export class AuthorsRepository {
@@ -104,7 +106,6 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  // async update() {}
 
   async update(id: number, coverImgUrl: string) {
     const author = await this.authorsRepository.findOne({ where: { id } });
@@ -130,20 +131,59 @@ export class AuthorsRepository {
   }
 
   async remove(authorId: number) {
-    const albums = await this.authorsRepository
+    const author = await this.authorsRepository
       .createQueryBuilder('author')
       .leftJoinAndSelect('author.albums', 'album')
+      .leftJoinAndSelect('album.musics', 'music')
       .where('author.id = :authorId', { authorId })
       .getOne();
 
-    if (albums && albums.albums.length > 0) {
-      const albumIds = albums.albums.map((album) => album.id);
+    if (!author) {
+      throw new InternalServerErrorException('Author not found');
+    }
+
+    const albums = author.albums || [];
+    const musics = albums.flatMap((album) => album.musics) || [];
+
+    if (albums.length > 0) {
       await this.authorsRepository
         .createQueryBuilder()
         .delete()
-        .from('album')
-        .whereInIds(albumIds)
+        .from('album_musics_music')
+        .whereInIds(
+          albums.flatMap((album) =>
+            album.musics.map((music) => ({
+              albumId: album.id,
+              musicId: music.id,
+            })),
+          ),
+        )
         .execute();
     }
+
+    if (musics.length > 0) {
+      await this.authorsRepository
+        .createQueryBuilder()
+        .delete()
+        .from(MusicEntity)
+        .whereInIds(musics.map((music) => music.id))
+        .execute();
+    }
+
+    if (albums.length > 0) {
+      await this.authorsRepository
+        .createQueryBuilder()
+        .delete()
+        .from(AlbumEntity)
+        .whereInIds(albums.map((album) => album.id))
+        .execute();
+    }
+
+    await this.authorsRepository
+      .createQueryBuilder()
+      .delete()
+      .from(AuthorEntity)
+      .where('id = :authorId', { authorId })
+      .execute();
   }
 }
