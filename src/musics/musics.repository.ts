@@ -67,6 +67,7 @@ export class MusicsRepository {
         .createQueryBuilder('music')
         .leftJoin('music.listenRecords', 'listenRecord')
         .where('listenRecord.listenedAt >= :oneWeekAgo', { oneWeekAgo })
+        .addSelect('music.id', 'id')
         .addSelect('music.title', 'title')
         .addSelect('music.artistName', 'artistName')
         .addSelect('music.coverImgUrl', 'coverImgUrl')
