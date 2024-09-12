@@ -129,12 +129,21 @@ export class AuthorsRepository {
       .getMany();
   }
 
-  async remove(id: number) {
-    await this.authorsRepository.softDelete(id);
-    return this.authorsRepository
+  async remove(authorId: number) {
+    const albums = await this.authorsRepository
       .createQueryBuilder('author')
-      .withDeleted()
-      .where('author.id = :id', { id })
+      .leftJoinAndSelect('author.albums', 'album')
+      .where('author.id = :authorId', { authorId })
       .getOne();
+
+    if (albums && albums.albums.length > 0) {
+      const albumIds = albums.albums.map((album) => album.id);
+      await this.authorsRepository
+        .createQueryBuilder()
+        .delete()
+        .from('album')
+        .whereInIds(albumIds)
+        .execute();
+    }
   }
 }

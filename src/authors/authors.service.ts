@@ -42,8 +42,6 @@ export class AuthorsService {
     return await this.authorsRepository.findOne(id);
   }
 
-  // async update() {}
-
   async update(id: number, picture: Express.Multer.File) {
     const { url: coverImgUrl } = await this.filesService.uploadFile(
       picture,
@@ -70,6 +68,14 @@ export class AuthorsService {
   }
 
   async remove(id: number) {
+    const author = await this.authorsRepository.findOne(id);
+
+    if (!author) {
+      throw new NotFoundException('Author not found');
+    }
+
+    await this.authorsRepository.remove(id);
+
     return await this.authorsRepository.remove(id);
   }
 

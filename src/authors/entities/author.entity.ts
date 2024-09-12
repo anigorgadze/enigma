@@ -45,7 +45,10 @@ export class AuthorEntity {
   @JoinTable()
   musics: MusicEntity[];
 
-  @ManyToMany(() => AlbumEntity, (albums) => albums.authors, { cascade: true })
+  @ManyToMany(() => AlbumEntity, (albums) => albums.authors, {
+    cascade: ['soft-remove'],
+    onDelete: 'CASCADE',
+  })
   albums: AlbumEntity[];
 
   @CreateDateColumn()
