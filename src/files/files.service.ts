@@ -36,12 +36,10 @@ export class FilesService {
       const command = new PutObjectCommand(params);
       await this.s3Client.send(command);
 
-     
       const url = `https://${params.Bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${params.Key}`;
 
-      return { url }; 
+      return { url };
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException(
         'Could not upload file, try again later!',
       );

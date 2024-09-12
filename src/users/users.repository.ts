@@ -33,17 +33,11 @@ export class UsersRepository {
       .getMany();
   }
 
-  // where: { id: playlistId },
-  //     relations: { musics: true },
-
   async findMe(id: number) {
     const user = await this.usersRepository.findOne({
       where: { id },
       relations: { playlists: { musics: true } },
     });
-
-    console.log(id)
-    console.log(user);
 
     const { password, ...result } = user;
     return result;

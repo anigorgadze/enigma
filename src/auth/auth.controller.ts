@@ -9,7 +9,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Request() req) {
-    console.log(req);
+
     return this.authService.login(req.body.email, req.body.password);
   }
 
