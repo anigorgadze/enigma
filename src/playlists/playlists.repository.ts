@@ -64,7 +64,7 @@ export class PlaylistsRepository {
       }
 
       if (!playlist.musics.some((m) => m.id === music.id)) {
-        playlist.musics.push(music);
+        playlist.musics.unshift(music);
       }
     }
 
