@@ -31,12 +31,11 @@ export class AuthorsRepository {
     }
   }
 
-  async findAll(): Promise<AuthorEntity[]> {
+  async findAll() {
     const authors = await this.authorsRepository
       .createQueryBuilder('author')
       .leftJoinAndSelect('author.albums', 'albums')
       .leftJoinAndSelect('albums.musics', 'musics')
-      .loadRelationCountAndMap('author.musicsCount', 'albums.musics')
       .getMany();
 
     return authors;
@@ -105,7 +104,6 @@ export class AuthorsRepository {
       .take(50)
       .getMany();
   }
-
 
   async update(id: number, coverImgUrl: string) {
     const author = await this.authorsRepository.findOne({ where: { id } });
