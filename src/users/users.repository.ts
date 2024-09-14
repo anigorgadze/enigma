@@ -34,10 +34,17 @@ export class UsersRepository {
   }
 
   async findMe(id: number) {
-    const user = await this.usersRepository.findOne({
-      where: { id },
-      relations: { playlists: { musics: true } },
-    });
+    const user = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.playlists', 'playlist')
+      .leftJoinAndSelect('playlist.musics', 'musics')
+      .loadRelationCountAndMap('playlist.musicsCount', 'playlist.musics')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
 
     const { password, ...result } = user;
     return result;
