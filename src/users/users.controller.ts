@@ -44,22 +44,25 @@ export class UsersController {
   findOne(@Param('id') id: number) {
     return this.usersService.findOne(id);
   }
-
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   @Patch(':id/block')
   blockUser(@Param('id') id: number) {
     return this.usersService.blockUser(id);
   }
 
+  @Roles(Role.Admin)
   @Patch(':id/unblock')
   unblockUser(@Param('id') id: number) {
     return this.usersService.unblockUser(id);
   }
 
+  @Roles(Role.Admin)
   @Patch(':id')
   update(@Param('id') id: number, @Body() createUsersDto: CreateUsersDto) {
     return this.usersService.update(id, createUsersDto);
   }
-
+  @Roles(Role.Admin)
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.usersService.remove(id);
