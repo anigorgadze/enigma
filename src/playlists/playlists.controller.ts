@@ -26,7 +26,7 @@ export class PlaylistsController {
   create(@Body() createPlaylistDto: CreatePlaylistDto, @Request() req) {
     return this.playlistsService.create(createPlaylistDto, req.user.sub);
   }
-
+// 568355589 lursmana
   @Get()
   findAll() {
     return this.playlistsService.findAll();
@@ -44,7 +44,6 @@ export class PlaylistsController {
     return this.playlistsService.addMusicToPlaylist(updatePlaylistDto);
   }
 
-  
   @Roles(Role.Admin, Role.User)
   @Patch(':id')
   update(
