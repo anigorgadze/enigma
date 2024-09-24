@@ -23,7 +23,6 @@ export class ListenRecordsController {
     @Body() createListenRecordDto: CreateListenRecordDto,
   ) {
     const { musicId } = createListenRecordDto;
-
     try {
       return await this.listenRecordsService.create(req.user.sub, musicId);
     } catch (error) {
