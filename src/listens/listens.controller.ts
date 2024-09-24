@@ -4,20 +4,19 @@ import {
   Body,
   Get,
   NotFoundException,
-  Req,
   Request,
-  UseGuards,
 } from '@nestjs/common';
 
 import { CreateListenRecordDto } from './dto/create-listenRecord.dto';
 import { ListenRecordsService } from './listens.service';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { Public } from 'src/auth/public.decorator';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 @Controller('listen-records')
 export class ListenRecordsController {
   constructor(private readonly listenRecordsService: ListenRecordsService) {}
 
+  @Roles(Role.Admin, Role.User)
   @Post()
   async create(
     @Request() req,
