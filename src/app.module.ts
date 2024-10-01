@@ -15,6 +15,8 @@ import { APP_GUARD, Reflector } from '@nestjs/core';
 import { RolesGuard } from './auth/roles.guard';
 import { ListenRecordsModule } from './listens/listens.module';
 import { TopchartsModule } from './topcharts/topcharts.module';
+import { TikTokAuthModule } from './tiktok/tiktok.auth.module';
+import { TikTokModule } from './tiktok/tiktok.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { TopchartsModule } from './topcharts/topcharts.module';
     UsersModule,
     AuthorsModule,
     AlbumsModule,
+    TikTokAuthModule,
+    TikTokModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.MYSQL_HOST_NAME || 'localhost',
