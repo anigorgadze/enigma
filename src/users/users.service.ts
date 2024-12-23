@@ -15,19 +15,25 @@ export class UsersService {
     if (userExist) {
       throw new UnauthorizedException('User exists');
     }
-    return this.usersRepository.create(createUsersDto);
+
+    const user = await this.usersRepository.create(createUsersDto);
+    return { id: user.id, email: user.email };
   }
 
   async findMe(id: number) {
-    return this.usersRepository.findMe(id);
+    const user = await this.usersRepository.findMe(id);
+    if (!user) throw new UnauthorizedException('User not found');
+    return { id: user.id, email: user.email, playlists: user.playlists };
   }
 
-  async findUserById(id: number) {
-    return await this.usersRepository.findOne(id);
+  async findAll() {
+    return this.usersRepository.findAll();
   }
 
-  async findByEmail(email: string) {
-    return await this.usersRepository.findByEmail(email);
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) throw new UnauthorizedException('User not found');
+    return user;
   }
 
   async blockUser(id: number) {
@@ -38,19 +44,11 @@ export class UsersService {
     return this.usersRepository.unblockUser(id);
   }
 
-  findAll() {
-    return this.usersRepository.findAll();
-  }
-
-  findOne(id: number) {
-    return this.usersRepository.findOne(id);
-  }
-
-  update(id: number, updateUsersDto: UpdateUsersDto) {
+  async update(id: number, updateUsersDto: UpdateUsersDto) {
     return this.usersRepository.update(id, updateUsersDto);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.usersRepository.remove(id);
   }
 }

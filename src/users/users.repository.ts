@@ -1,71 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUsersDto } from './dto/create-users.dto';
-import { UpdateUsersDto } from './dto/update-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
+import { CreateUsersDto } from './dto/create-users.dto';
+import { UpdateUsersDto } from './dto/update-users.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersRepository {
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserssDto: CreateUsersDto) {
+  async create(createUsersDto: CreateUsersDto) {
     const newUser = new UserEntity();
-    newUser.email = createUserssDto.email;
-    newUser.password = bcrypt.hashSync(createUserssDto.password, 10);
+    newUser.email = createUsersDto.email;
+    newUser.password = bcrypt.hashSync(createUsersDto.password, 10);
     return this.usersRepository.save(newUser);
   }
 
   async findByEmail(email: string) {
-    return await this.usersRepository.findOne({
-      where: { email },
-    });
+    return await this.usersRepository.findOne({ where: { email } });
   }
 
   async findAll() {
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists', 'playlist')
-      .getMany();
+    return await this.usersRepository.find();
   }
 
   async findMe(id: number) {
-    const user = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists', 'playlist')
-      .leftJoinAndSelect('playlist.musics', 'musics')
-      .loadRelationCountAndMap('playlist.musicsCount', 'playlist.musics')
-      .where('user.id = :id', { id })
-      .getOne();
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['playlists'],
+    });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
+    // Exclude password in the returned object
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = user;
     return result;
   }
 
   async findOne(id: number) {
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists', 'playlist')
-      .where('user.id =:id', { id })
-      .getOne();
+    return await this.usersRepository.findOne({
+      where: { id },
+      relations: ['playlists'],
+    });
   }
 
   async blockUser(id: number) {
     await this.usersRepository.update(id, { blocked: true });
-    return this.usersRepository.findOne({ where: { id } });
+    return this.findOne(id);
   }
 
   async unblockUser(id: number) {
     await this.usersRepository.update(id, { blocked: false });
-    return this.usersRepository.findOne({ where: { id } });
+    return this.findOne(id);
   }
 
   async update(id: number, updateUsersDto: UpdateUsersDto) {
@@ -76,30 +67,15 @@ export class UsersRepository {
         salt,
       );
     }
-    await this.usersRepository
-      .createQueryBuilder('user')
-      .update()
-      .set(updateUsersDto)
-      .where('user.id =:id', { id })
-      .execute();
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.playlists', 'playlist')
-      .where('user.id =:id', { id })
-      .getOne();
+    await this.usersRepository.update(id, updateUsersDto);
+    return this.findOne(id);
   }
 
   async remove(id: number) {
-    await this.usersRepository
-      .createQueryBuilder('user')
-      .where('user.id =:id', { id })
-      .softDelete()
-      .execute();
-
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .withDeleted()
-      .where('user.id =:id', { id })
-      .getOne();
+    await this.usersRepository.softDelete(id);
+    return await this.usersRepository.findOne({
+      where: { id },
+      withDeleted: true,
+    });
   }
 }
