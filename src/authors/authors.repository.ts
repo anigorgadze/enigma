@@ -134,7 +134,7 @@ export class AuthorsRepository {
       .leftJoinAndSelect('author.albums', 'album')
       .leftJoinAndSelect('album.musics', 'music')
       .where('author.id = :authorId', { authorId })
-      .getOne();
+      .getOne(); 
 
     if (!author) {
       throw new InternalServerErrorException('Author not found');
